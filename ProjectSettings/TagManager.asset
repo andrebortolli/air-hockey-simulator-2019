@@ -3,7 +3,10 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Disc
+  - Player 1
+  - Player 2
   layers:
   - Default
   - TransparentFX
@@ -17,7 +20,7 @@ TagManager:
   - Net Layer
   - Player Layer
   - Disc Layer
-  - 
+  - Area Layer
   - 
   - 
   - 

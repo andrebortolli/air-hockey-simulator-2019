@@ -11,21 +11,13 @@ namespace Scripts.Player
             this.speed = speed;
             this.isAI = true;
             score = 0;
-            SetAxesNames("PLACEHOLDER", "PLACEHOLDER");
         }
         public Player(float speed, bool isAI, string movementAxisNameX, string movementAxisNameY)
         {
             this.speed = speed;
             this.isAI = isAI;
             score = 0;
-            if (isAI)
-            {
-                SetAxesNames("PLACEHOLDER", "PLACEHOLDER");
-            }
-            else
-            {
-                SetAxesNames(movementAxisNameX, movementAxisNameY);
-            }
+            SetAxesNames(movementAxisNameX, movementAxisNameY);
         }
         public void SetAxesNames(string x, string y)
         {
