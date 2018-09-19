@@ -1,39 +1,40 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Scripts.Player;
+using Scripts.Player; //Imports player class.
 
 public class PlayerController : MonoBehaviour
 {
-    private Player player;
-    public bool aI;
-    private bool aILast;
-    [Range(0.0f, 1.0f)]
-    public float aiResponse;
-    public Transform target;
-    private Rigidbody rb;
-    public bool inverseControls;
-    public string[] movementAxes = new string[2];
-    public string triggerAxis;
-    public Vector2 movementAxesValues;
-    public float triggerAxisMultiplier;
-    public float speed;
-    public float playerSpeedMultiplier = 1000.0f;
+    private Player player; //Define the class variable.
+    public bool aI; //Toggle switch between AI and Player.
+    private bool aILast; //Toggle switch helper.
+    [Range(0.0f, 1.0f)] //AI response range.
+    public float aiResponse; //AI response slider.
+    public Transform target; //AI target to follow.
+    private Rigidbody rb; //Player Rigidbody component.
+    public bool inverseControls; //Toggle player inverse movement.
+    public string[] movementAxes = new string[2]; //Player movement axes names.
+    public string triggerAxis; //Player trigger axis name.
+    public Vector2 movementAxesValues; //Player movement axes values.
+    public float triggerAxisMultiplier; //Player trigger axis multiplier.
+    public float speed; //Player speed.
+    public float playerSpeedMultiplier = 1000.0f; //Player speed multiplier. NOTE: Use this value to balance between AI and Player movement speeds, since the AI is always faster by unit.
 
+    //Instantiates players.
     string UpdatePlayerType()
     {
-        string type;
-        if (aI == true)
+        string type; //Player type. AI or Player.
+        if (aI == true) //If player type is AI, create a new AI player.
         {
-            player = new Player(speed);
-            type = "AI";
+            player = new Player(speed); //Define player variable.
+            type = "AI"; //Set type to AI. (Report use only).
         }
-        else
+        else //If player is not AI, create a new player, using the current script attributes.
         {
-            player = new Player(speed, false, movementAxes[0], movementAxes[1]);
-            type = "Player";
+            player = new Player(speed, false, movementAxes[0], movementAxes[1]); //Define player variable.
+            type = "Player"; //Set type to Player. (Report use only).
         }
-        aILast = aI;
+        aILast = aI; //Sets the toggle helper
         return string.Format("Player Type changed from to {0}, with the following axes: {1}", type, movementAxes[0] + " " + movementAxes[1]);
     }
 
