@@ -7,6 +7,7 @@ using Scripts.DebugInfo;
 
 public class GameController : MonoBehaviour
 {
+    private int[] playerScore = new int[2];
     public bool enableDebug;
     private DebugInformation dbgInfo;
     public TMP_Text fpsCounter;

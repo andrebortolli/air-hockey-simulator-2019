@@ -6,10 +6,12 @@ public class Disc : MonoBehaviour
 {
     private Rigidbody rb;
     public float throwSpeed;
- 
+    private Vector3 startingPosition;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        startingPosition = transform.position;
     }
 
     void Throw(float speed)
@@ -29,6 +31,22 @@ public class Disc : MonoBehaviour
         if (rb != null)
         {
             Throw(throwSpeed);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Back Goal")
+        {
+            Debug.Log("Player 2 scored a goal!");
+            transform.position = startingPosition;
+            Start();
+        }
+        if (other.gameObject.tag == "Front Goal")
+        {
+            Debug.Log("Player 1 scored a goal!");
+            transform.position = startingPosition;
+            Start();
         }
     }
 }
