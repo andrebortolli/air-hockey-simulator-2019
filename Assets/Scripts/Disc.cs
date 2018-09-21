@@ -6,7 +6,7 @@ public class Disc : MonoBehaviour
 {
     private Rigidbody rb;
     public float throwSpeed;
-
+ 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();

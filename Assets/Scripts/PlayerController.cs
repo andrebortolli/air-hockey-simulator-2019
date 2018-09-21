@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
     private Player player; //Define the class variable.
     public bool aI; //Toggle switch between AI and Player.
     private bool aILast; //Toggle switch helper.
-    [Range(0.0f, 1.0f)] //AI response range.
+    [Range(0.0f, 0.15f)] //AI response range.
     public float aiResponse; //AI response slider.
     public Transform target; //AI target to follow.
     private Rigidbody rb; //Player Rigidbody component.
@@ -18,13 +18,27 @@ public class PlayerController : MonoBehaviour
     public Vector2 movementAxesValues; //Player movement axes values.
     public float triggerAxisMultiplier; //Player trigger axis multiplier.
     public float speed; //Player speed.
-    public float playerSpeedMultiplier = 1000.0f; //Player speed multiplier. NOTE: Use this value to balance between AI and Player movement speeds, since the AI is always faster by unit.
+    public float playerSpeedMultiplier = 1000.0f; //Player speed multiplier. Used to make the speed variable lower.
 
+    Vector3 predictGameObjectPosition(GameObject gameObject) //WIP
+    {
+        Vector3 predictedPosition;
+        Vector3 targetPosition = gameObject.transform.position;
+        Vector3 targetVelocity = gameObject.GetComponent<Rigidbody>().velocity;
+        //Vector3 heading = gameObject.transform.position - this.transform.position;
+        //float distance = heading.magnitude;
+        predictedPosition = targetPosition + targetVelocity;
+        Debug.DrawLine(gameObject.transform.position, predictedPosition, Color.red);
+        Debug.Log("Predicted Position: " + predictedPosition.ToString() + "Current Position: " + targetPosition.ToString());
+        return predictedPosition;
+    }
+        
     //Instantiates players.
     string UpdatePlayerType()
     {
         string type; //Player type. AI or Player.
-        if (aI == true) //If player type is AI, create a new AI player.
+        //If player type is AI, create a new AI player.
+        if (aI == true) 
         {
             player = new Player(speed); //Define player variable.
             type = "AI"; //Set type to AI. (Report use only).
@@ -35,35 +49,35 @@ public class PlayerController : MonoBehaviour
             type = "Player"; //Set type to Player. (Report use only).
         }
         aILast = aI; //Sets the toggle helper
-        return string.Format("Player Type changed from to {0}, with the following axes: {1}", type, movementAxes[0] + " " + movementAxes[1]);
+        return string.Format("Player Type changed from to {0}, with the following axes: {1}", type, movementAxes[0] + " " + movementAxes[1]); //Report to console.
     }
 
     private void Awake()
     {
-        UpdatePlayerType();
-        rb = GetComponent<Rigidbody>();
+        UpdatePlayerType(); //Set player type on Awake.
+        rb = GetComponent<Rigidbody>(); //Get and set the GameObject's Rigidbody on Awake.
     }
-    // Use this for initialization
-    void Start ()
-    {
-		
-	}
+
 	void FixedUpdate ()
     {
+        //Detect change in Player type. Needs to be before everything, otherwise it may desync, giving console errors.
         if (aI != aILast)
         {
-            Debug.Log(UpdatePlayerType());
+            Debug.Log(UpdatePlayerType()); //Update player type and print the method's return on the console.
         }
-
+        //If the player type is AI, use AI movement code.
         if (aI)
         {
-            Vector3 desiredPosition = new Vector3(target.position.x, rb.position.y, target.position.z);
-            Vector3 newPosition = Vector3.Lerp(transform.position, desiredPosition, aiResponse);
-            rb.velocity = (newPosition - transform.position) * speed;
+            Vector3 predictedPosition = predictGameObjectPosition(target.gameObject);
+            Vector3 newPosition = Vector3.Lerp(transform.position, predictedPosition, aiResponse);
+            //Vector3 desiredPosition = new Vector3(target.position.x, rb.position.y, target.position.z); //OLD
+            //Vector3 newPosition = Vector3.Lerp(transform.position, desiredPosition, aiResponse); //OLD
+            rb.velocity = (newPosition - transform.position) * speed * playerSpeedMultiplier * triggerAxisMultiplier /*placeholder*/ * Time.fixedDeltaTime;
         }
-        else
+        else //If the player type is not AI, use player movement code.
         {
-            triggerAxisMultiplier = Mathf.Clamp(Input.GetAxis(triggerAxis), 0.2f, 1.0f);
+            triggerAxisMultiplier = Mathf.Clamp(Input.GetAxis(triggerAxis), 0.2f, 1.0f); //Clamps the trigger speed. Lower value cannot be 0.0, otherwise the player wont move. Max should be 1.0, since it would be a neutral variable in the following code.
+            //Check if inverseControls are true, if yes use inverted controls.
             if (inverseControls)
             {
                 movementAxesValues = new Vector2(Input.GetAxis(player.MovementAxisNameX), Input.GetAxis(player.MovementAxisNameY));
@@ -76,9 +90,19 @@ public class PlayerController : MonoBehaviour
             }
         }
 	}
-
-    private void Update()
+    private void OnCollisionEnter(Collision collision)
     {
-       
+        if (collision.gameObject.tag == "Disc" && aI)
+        {
+            triggerAxisMultiplier =Random.Range(0.5f,1.0f);
+            rb.AddRelativeForce(0.0f, 0.0f, -50.0f);
+        }
+    }
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.tag == "Disc" && aI)
+        {
+            triggerAxisMultiplier = 0.2f;
+        }
     }
 }
