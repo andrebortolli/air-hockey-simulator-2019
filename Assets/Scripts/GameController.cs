@@ -12,11 +12,17 @@ public class GameController : MonoBehaviour
     private DebugInformation dbgInfo;
     public TMP_Text fpsCounter;
     public TMP_Text frameCounter;
+    public List<PlayerController> players;
 
     private void UpdateDebugInformationUI()
     {
         fpsCounter.text = string.Format("Framerate: {0:00.0} FPS", dbgInfo.GetFramerateSec());
         frameCounter.text = string.Format("Frametime: {0:00.0} ms / {1:00.0} ms", dbgInfo.GetFrametime(), dbgInfo.GetPhysicsFrametime()); //Not optimal, since Update time is slower than FixedUpdate. For now it works, but it would be best to separate Update and Physics time.
+    }
+
+    public void FindPlayers()
+    {
+        players = new List<PlayerController>(FindObjectsOfType<PlayerController>());
     }
 
     private void Awake()
@@ -29,8 +35,8 @@ public class GameController : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-		
-	}
+        FindPlayers();
+    }
 	// Update is called once per frame
 	void Update ()
     {

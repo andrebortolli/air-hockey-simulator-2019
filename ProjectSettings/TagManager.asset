@@ -9,6 +9,8 @@ TagManager:
   - Player 2
   - Back Goal
   - Front Goal
+  - Area Player 1
+  - Area Player 2
   layers:
   - Default
   - TransparentFX
@@ -23,7 +25,7 @@ TagManager:
   - Player Layer
   - Disc Layer
   - Area Layer
-  - 
+  - Raycast Layer
   - 
   - 
   - 
