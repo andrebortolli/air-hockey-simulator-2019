@@ -11,6 +11,8 @@ TagManager:
   - Front Goal
   - Area Player 1
   - Area Player 2
+  - Wall
+  - Corner
   layers:
   - Default
   - TransparentFX

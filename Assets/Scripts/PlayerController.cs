@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviour
     private GameController gameController;
     private Player player; //Define the class variable.
     public GameObject goal;
+    public GameObject opponentGoal;
+    private Vector3 startPosition;
     public bool aI; //Toggle switch between AI and Player.
     private bool aILast; //Toggle switch helper.
     [Range(0.0f, 1.0f)] //AI response range.
@@ -97,6 +99,7 @@ public class PlayerController : MonoBehaviour
         UpdatePlayerType(); //Set player type on Awake.
         rb = GetComponent<Rigidbody>(); //Get and set the GameObject's Rigidbody on Awake.
         gameController = FindObjectOfType<GameController>();
+        startPosition = transform.position;
     }
 
 	void FixedUpdate ()
@@ -116,9 +119,8 @@ public class PlayerController : MonoBehaviour
             //Vector3 newPosition = Vector3.Lerp(transform.position, predictedPosition, aiResponse);
             if (returnToGoal)
             {
-                Vector3 goalPosition = new Vector3(goal.transform.position.x, rb.position.y, goal.transform.position.z); //OLD
-                Vector3 lerpToGoalPosition = Vector3.Lerp(transform.position, goalPosition, aiResponse * 0.25f); //OLD
-                rb.velocity = (lerpToGoalPosition - transform.position) * speed * triggerAxisMultiplier * Time.fixedDeltaTime;
+                Vector3 lerpToStartPosition = Vector3.Lerp(transform.position, startPosition, aiResponse * 0.25f);
+                rb.velocity = (lerpToStartPosition - transform.position) * speed * triggerAxisMultiplier * Time.fixedDeltaTime;
                 //Debug.Log("I'm trying to go to: " + goal.name);
             }
             else
@@ -150,7 +152,7 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.tag == "Disc" && aI)
         {
             triggerAxisMultiplier = 1.0f;
-            target.parent.parent.GetComponent<Rigidbody>().AddForce(Vector3.forward * -target.parent.transform.eulerAngles.z * speed * Random.Range(420f,42000f), ForceMode.Acceleration);
+            target.parent.parent.GetComponent<Rigidbody>().AddForce((opponentGoal.transform.position - target.transform.position) * Random.Range(100.0f, 350.0f) * aiResponse, ForceMode.Acceleration); //Shoot to goal.
         }
     }
     private void OnCollisionExit(Collision collision)
