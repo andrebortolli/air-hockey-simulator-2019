@@ -40,15 +40,15 @@ public class Target : MonoBehaviour
         if (other.gameObject.tag == "Area Player 1")
         {
             goalToFollow = 0;
-            GameObject.FindWithTag("Player 1").GetComponent<PlayerController>().ReturnToGoal = false;
-            GameObject.FindWithTag("Player 2").GetComponent<PlayerController>().ReturnToGoal = true;
+            GameObject.FindWithTag("Player 1").GetComponent<PlayerController>().ReturnToStartingPosition = false;
+            GameObject.FindWithTag("Player 2").GetComponent<PlayerController>().ReturnToStartingPosition = true;
             //Debug.Log("1");
         }
         else if (other.gameObject.tag == "Area Player 2")
         {
             goalToFollow = 1;
-            GameObject.FindWithTag("Player 1").GetComponent<PlayerController>().ReturnToGoal = true;
-            GameObject.FindWithTag("Player 2").GetComponent<PlayerController>().ReturnToGoal = false;
+            GameObject.FindWithTag("Player 1").GetComponent<PlayerController>().ReturnToStartingPosition = true;
+            GameObject.FindWithTag("Player 2").GetComponent<PlayerController>().ReturnToStartingPosition = false;
             //Debug.Log("0");
         }
     }

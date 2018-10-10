@@ -7,9 +7,9 @@ public class PlayerController : MonoBehaviour
 {
     private GameController gameController;
     private Player player; //Define the class variable.
-    public GameObject goal;
-    public GameObject opponentGoal;
-    private Vector3 startPosition;
+    public GameObject goal; //Own goal.
+    public GameObject opponentGoal; //Opponent Player's goal.
+    private Vector3 startPosition; //Player start position. Used in the return to function in AI movement code.
     public bool aI; //Toggle switch between AI and Player.
     private bool aILast; //Toggle switch helper.
     [Range(0.0f, 1.0f)] //AI response range.
@@ -22,58 +22,19 @@ public class PlayerController : MonoBehaviour
     private Vector2 movementAxesValues; //Player movement axes values.
     public float triggerAxisMultiplier; //Player trigger axis multiplier.
     public float speed; //Player speed.
-    //public float playerSpeedMultiplier = 1000.0f; //Player speed multiplier. Used to make the speed variable lower.
-    private bool returnToGoal;
-    public bool ReturnToGoal
+    private bool returnToStartingPosition;
+    public bool ReturnToStartingPosition
     {
         get
         {
-            return returnToGoal;
+            return returnToStartingPosition;
         }
         set
         {
-            returnToGoal = value;
+            returnToStartingPosition = value;
         }
     }
 
-    void RaycastTo(GameObject origin, GameObject direction)
-    {
-        RaycastHit hit;
-        if (Physics.Raycast(origin.transform.position, direction.transform.position, out hit, 30f, 13))
-        {
-           //Debug.Log(string.Format("[{4}] The Raycast hit the object at the following position: {0}. The distance between the origin {1} and the direction {2} is: {3} units.", hit.point, origin.gameObject.name, direction.gameObject.name, hit.distance, this.gameObject.tag));
-            Debug.DrawRay(origin.transform.position, direction.transform.position, Color.green);
-        }
-    }
-
-    Vector3 PredictGameObjectPosition(GameObject gameObject) //WIP
-    {
-        Vector3 predictedPosition;
-        Vector3 targetPosition = gameObject.transform.position;
-        Vector3 targetVelocity = gameObject.GetComponent<Rigidbody>().velocity.normalized;
-        //Vector3 heading = gameObject.transform.position - this.transform.position;
-        //float distance = heading.magnitude;
-        predictedPosition = targetPosition + targetVelocity;
-        Debug.DrawLine(gameObject.transform.position, predictedPosition, Color.red);
-        //Debug.Log("Predicted Position: " + predictedPosition.ToString() + " Current Position: " + targetPosition.ToString());
-        return predictedPosition;
-    }
-
-    Vector3 GetPositionByRayCast(GameObject origin, GameObject direction)
-    {
-        RaycastHit hit;
-        if (Physics.Raycast(origin.transform.position, direction.transform.position, out hit))
-        {
-            //Debug.Log(string.Format("[{4}] The Raycast hit the object at the following position: {0}. The distance between the origin {1} and the direction {2} is: {3} units.", hit.point, origin.gameObject.name, direction.gameObject.name, hit.distance, this.gameObject.tag));
-            Debug.DrawRay(origin.transform.position, direction.transform.position, Color.red);
-            return hit.point;
-        }
-        else
-        {
-            return Vector3.zero;
-        }
-    }
-        
     //Instantiates players.
     string UpdatePlayerType()
     {
@@ -90,7 +51,6 @@ public class PlayerController : MonoBehaviour
             type = "Player"; //Set type to Player. (Report use only).
         }
         aILast = aI; //Sets the toggle helper
-        //gameController.FindPlayers();
         return string.Format("Player Type changed from to {0}, with the following axes: {1}", type, movementAxes[0] + " " + movementAxes[1]); //Report to console.
     }
 
@@ -104,7 +64,6 @@ public class PlayerController : MonoBehaviour
 
 	void FixedUpdate ()
     {
-        //RaycastTo(target.gameObject, goal.gameObject);
         //Detect change in Player type. Needs to be before everything, otherwise it may desync, giving console errors.
         if (aI != aILast)
         {
@@ -114,14 +73,10 @@ public class PlayerController : MonoBehaviour
         if (aI)
         {
             triggerAxisMultiplier = Mathf.Clamp(Input.GetAxis(triggerAxis), 0.2f, 1.0f); //Clamps the trigger speed. Lower value cannot be 0.0, otherwise the player wont move. Max should be 1.0, since it would be a neutral variable in the following code.
-            //Vector3 predictedPosition = GetPositionByRayCast(this.gameObject, target.gameObject);
-            //Vector3 predictedPosition = PredictGameObjectPosition(target.gameObject);
-            //Vector3 newPosition = Vector3.Lerp(transform.position, predictedPosition, aiResponse);
-            if (returnToGoal)
+            if (returnToStartingPosition)
             {
                 Vector3 lerpToStartPosition = Vector3.Lerp(transform.position, startPosition, aiResponse * 0.25f);
                 rb.velocity = (lerpToStartPosition - transform.position) * speed * triggerAxisMultiplier * Time.fixedDeltaTime;
-                //Debug.Log("I'm trying to go to: " + goal.name);
             }
             else
             {
@@ -129,7 +84,6 @@ public class PlayerController : MonoBehaviour
                 Vector3 newPosition = Vector3.Lerp(transform.position, desiredPosition, aiResponse); //OLD
                 rb.velocity = (newPosition - transform.position) * speed * triggerAxisMultiplier /*placeholder*/ * Time.fixedDeltaTime;
             }
-            //rb.velocity = Vector3.Lerp(transform.position, new Vector3(target.transform.position.x, transform.position.y, transform.position.z), aiResponse);
         }
         else //If the player type is not AI, use player movement code.
         {
