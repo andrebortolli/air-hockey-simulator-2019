@@ -35,6 +35,16 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public int GetPlayerScore()
+    {
+        return player.Score;
+    }
+
+    public void AddPlayerScore(int scoreToAdd)
+    {
+        player.Score += scoreToAdd;
+    }
+
     //Instantiates players.
     string UpdatePlayerType()
     {

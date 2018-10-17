@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Disc : MonoBehaviour
 {
+    private GameController gameController;
     private Rigidbody rb;
     public float throwSpeed;
     private Vector3 startingPosition;
@@ -12,6 +13,7 @@ public class Disc : MonoBehaviour
 
     private void Awake()
     {
+        gameController = FindObjectOfType<GameController>();
         rb = GetComponent<Rigidbody>();
         audioSource = GetComponent<AudioSource>();
         startingPosition = transform.position;
@@ -54,7 +56,8 @@ public class Disc : MonoBehaviour
     {
         if (other.gameObject.tag == "Back Goal")
         {
-            Debug.Log("Player 2 scored a goal!");
+            //Debug.Log("Player 2 scored a goal!");
+            gameController.players[1].AddPlayerScore(1);
             transform.position = startingPosition;
             if (sfx[3])
             {
@@ -64,7 +67,8 @@ public class Disc : MonoBehaviour
         }
         if (other.gameObject.tag == "Front Goal")
         {
-            Debug.Log("Player 1 scored a goal!");
+            //Debug.Log("Player 1 scored a goal!");
+            gameController.players[0].AddPlayerScore(1);
             transform.position = startingPosition;
             if (sfx[3])
             {

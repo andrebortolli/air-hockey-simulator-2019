@@ -27,19 +27,24 @@ public class GameController : MonoBehaviour
             return isPaused;
         }
     }
+    public GameObject demoModeCameraPivot;
     public List<GameObject> gameObjectsToFreezeOnPause;
     public List<GameObject> gameObjectsToDisplayOnPause;
     public Vector3[] frozenGameObjectsVelocities;
-    private int[] playerScore = new int[2];
     public bool enableDebug;
     private DebugInformation dbgInfo;
     public TMP_Text fpsCounter;
     public TMP_Text frameCounter;
+    public TMP_Text discInfo;
+    public TMP_Text scoreInfo;
     public List<PlayerController> players;
+    public GameObject disc;
 
     public void DemoMode(bool value)
     {
         //Demo Mode code here.
+        demoModeCameraPivot.transform.Rotate(Vector3.down * Time.deltaTime * 10);
+        demoModeCameraPivot.GetComponentInChildren<Camera>().fieldOfView = 100;
     }
 
     public void PauseGame(bool pause)
@@ -91,6 +96,8 @@ public class GameController : MonoBehaviour
     {
         fpsCounter.text = string.Format("Framerate: {0:00.0} FPS", dbgInfo.GetFramerateSec());
         frameCounter.text = string.Format("Frametime: {0:00.0} ms / {1:00.0} ms", dbgInfo.GetFrametime(), dbgInfo.GetPhysicsFrametime()); //Not optimal, since Update time is slower than FixedUpdate. For now it works, but it would be best to separate Update and Physics time.
+        discInfo.text = string.Format("Current Pos: {0}\nPredict Pos: {1}\nVelocity: {2}\nHeading: {3}\n", disc.transform.position, disc.GetComponentInChildren<Transform>().position, disc.GetComponent<Rigidbody>().velocity, disc.transform.eulerAngles.y);
+        scoreInfo.text = string.Format("Score: [{0} | {1}]\t\t\t", players[0].GetPlayerScore(), players[1].GetPlayerScore());
     }
 
     public void FindPlayers()
@@ -113,6 +120,7 @@ public class GameController : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
+        //DemoMode(true);
         if (enableDebug)
         {
             UpdateDebugInformationUI();
