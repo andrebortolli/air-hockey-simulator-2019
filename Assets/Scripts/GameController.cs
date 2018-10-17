@@ -29,7 +29,8 @@ public class GameController : MonoBehaviour
     }
     public GameObject demoModeCameraPivot;
     public List<GameObject> gameObjectsToFreezeOnPause;
-    public List<GameObject> gameObjectsToDisplayOnPause;
+    public List<GameObject> gameObjectsToEnableOnPause;
+    public List<GameObject> gameObjectsToEnableOnUnpause;
     public Vector3[] frozenGameObjectsVelocities;
     public bool enableDebug;
     private DebugInformation dbgInfo;
@@ -40,51 +41,62 @@ public class GameController : MonoBehaviour
     public List<PlayerController> players;
     public GameObject disc;
 
-    public void DemoMode(bool value)
-    {
-        //Demo Mode code here.
-        demoModeCameraPivot.transform.Rotate(Vector3.down * Time.deltaTime * 10);
-        demoModeCameraPivot.GetComponentInChildren<Camera>().fieldOfView = 100;
-    }
-
     public void PauseGame(bool pause)
     {
         isPaused = pause;
         if (gameObjectsToFreezeOnPause != null)
         {
-            if (!isPaused)
+            if (!isPaused) //Unpause
             {
                 for (int i = 0; i < gameObjectsToFreezeOnPause.Count; i++)
                 {
                     gameObjectsToFreezeOnPause[i].GetComponent<MonoBehaviour>().enabled = true;
                     Rigidbody rb = gameObjectsToFreezeOnPause[i].GetComponent<Rigidbody>();
+                    AudioSource audioSource = gameObjectsToFreezeOnPause[i].GetComponent<AudioSource>();
                     if (rb && frozenGameObjectsVelocities != null)
                     {
                         rb.isKinematic = false;
                         rb.detectCollisions = true;
                         rb.velocity = frozenGameObjectsVelocities[i];
                     }
+                    if (audioSource)
+                    {
+                        audioSource.UnPause();
+                    }
                 }
-                foreach (GameObject go in gameObjectsToDisplayOnPause)
+                foreach (GameObject go in gameObjectsToEnableOnPause)
+                {
+                    go.SetActive(false);
+                }
+                foreach (GameObject go in gameObjectsToEnableOnUnpause)
                 {
                     go.SetActive(true);
                 }
             }
-            else
+            else //Pause
             {
                 frozenGameObjectsVelocities = new Vector3[gameObjectsToFreezeOnPause.Count];
                 for (int i = 0; i < gameObjectsToFreezeOnPause.Count; i++)
                 {
                     gameObjectsToFreezeOnPause[i].GetComponent<MonoBehaviour>().enabled = false;
                     Rigidbody rb = gameObjectsToFreezeOnPause[i].GetComponent<Rigidbody>();
+                    AudioSource audioSource = gameObjectsToFreezeOnPause[i].GetComponent<AudioSource>();
                     if (rb)
                     {
                         frozenGameObjectsVelocities[i] = rb.velocity;
                         rb.isKinematic = true;
                         rb.detectCollisions = false;
                     }
+                    if (audioSource)
+                    {
+                        audioSource.Pause();
+                    }
                 }
-                foreach (GameObject go in gameObjectsToDisplayOnPause)
+                foreach (GameObject go in gameObjectsToEnableOnPause)
+                {
+                    go.SetActive(true);
+                }
+                foreach (GameObject go in gameObjectsToEnableOnUnpause)
                 {
                     go.SetActive(false);
                 }
@@ -120,10 +132,13 @@ public class GameController : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        //DemoMode(true);
         if (enableDebug)
         {
             UpdateDebugInformationUI();
         } 
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            PauseGame(!IsPaused);
+        }
 	}
 }

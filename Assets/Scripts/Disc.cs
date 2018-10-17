@@ -13,6 +13,7 @@ public class Disc : MonoBehaviour
 
     private void Awake()
     {
+        Random.InitState((int)System.DateTime.UtcNow.Second);
         gameController = FindObjectOfType<GameController>();
         rb = GetComponent<Rigidbody>();
         audioSource = GetComponent<AudioSource>();
@@ -23,20 +24,23 @@ public class Disc : MonoBehaviour
     {
         Vector3 randomEulerAngle = new Vector3(Random.Range(60.0f, 120.0f), 0.0f, Random.Range(60.0f, 120.0f));
         //If value is 0, the disc will head towards player 1 (negative heading); Else the disc will remain with positive heading, going towards the player 2.
-        if (Random.Range(0,1) == 0)
+        if (Random.Range(0,2) == 0)
         {
             randomEulerAngle = randomEulerAngle * -1;
         }
+        rb.velocity = Vector3.zero;
         rb.AddForce(randomEulerAngle * speed, ForceMode.Acceleration);
     }
 
     // Use this for initialization
-    void Start()
+    IEnumerator Start()
     {
+        yield return new WaitForSeconds(1.0f);
         if (rb != null)
         {
             Throw(throwSpeed);
         }
+        yield return null;
     }
 
     private void PlaySFX(AudioClip sfx)
@@ -63,7 +67,7 @@ public class Disc : MonoBehaviour
             {
                 PlaySFX(sfx[3]);
             }
-            Start();
+            StartCoroutine(Start());
         }
         if (other.gameObject.tag == "Front Goal")
         {
@@ -74,7 +78,7 @@ public class Disc : MonoBehaviour
             {
                 PlaySFX(sfx[3]);
             }
-            Start();
+            StartCoroutine(Start());
         }
     }
     private void OnCollisionEnter(Collision collision)

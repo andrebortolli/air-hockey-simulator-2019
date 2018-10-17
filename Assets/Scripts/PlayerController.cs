@@ -116,7 +116,7 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.tag == "Disc" && aI)
         {
             triggerAxisMultiplier = 1.0f;
-            target.parent.parent.GetComponent<Rigidbody>().AddForce((opponentGoal.transform.position - target.transform.position) * Random.Range(100.0f, 350.0f) * aiResponse, ForceMode.Acceleration); //Shoot to goal.
+            target.parent.parent.GetComponent<Rigidbody>().AddForce((opponentGoal.transform.position - target.transform.position) * Random.Range(25.0f, 75.0f) * aiResponse, ForceMode.Acceleration); //Shoot to goal.
         }
     }
     private void OnCollisionExit(Collision collision)
