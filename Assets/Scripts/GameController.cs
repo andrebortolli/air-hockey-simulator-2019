@@ -4,11 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Scripts.DebugInfo;
-using ScriptTools.ObjectState;
 
 public class GameController : MonoBehaviour
 {
-    private SaveGameObjectState saveGameObjectState = new SaveGameObjectState();
     private bool isMainMenuVisible;
     public bool IsMainMenuVisible
     {
@@ -43,51 +41,6 @@ public class GameController : MonoBehaviour
     {
         //Demo Mode code here.
     }
-
-    //public void PauseGame(bool pause)
-    //{
-    //    isPaused = pause;
-    //    if (gameObjectsToFreezeOnPause != null)
-    //    {
-    //        if (!isPaused)
-    //        {
-    //            for (int i = 0; i < gameObjectsToFreezeOnPause.Count; i++)
-    //            {
-    //                gameObjectsToFreezeOnPause[i].GetComponent<MonoBehaviour>().enabled = true;
-    //                Rigidbody rb = gameObjectsToFreezeOnPause[i].GetComponent<Rigidbody>();
-    //                if (rb && frozenGameObjectsVelocities != null)
-    //                {
-    //                    rb.isKinematic = false;
-    //                    rb.detectCollisions = true;
-    //                    rb.velocity = frozenGameObjectsVelocities[i];
-    //                }
-    //            }
-    //            foreach (GameObject go in gameObjectsToDisplayOnPause)
-    //            {
-    //                go.SetActive(true);
-    //            }
-    //        }
-    //        else
-    //        {
-    //            frozenGameObjectsVelocities = new Vector3[gameObjectsToFreezeOnPause.Count];
-    //            for (int i = 0; i < gameObjectsToFreezeOnPause.Count; i++)
-    //            {
-    //                gameObjectsToFreezeOnPause[i].GetComponent<MonoBehaviour>().enabled = false;
-    //                Rigidbody rb = gameObjectsToFreezeOnPause[i].GetComponent<Rigidbody>();
-    //                if (rb)
-    //                {
-    //                    frozenGameObjectsVelocities[i] = rb.velocity;
-    //                    rb.isKinematic = true;
-    //                    rb.detectCollisions = false;
-    //                }
-    //            }
-    //            foreach (GameObject go in gameObjectsToDisplayOnPause)
-    //            {
-    //                go.SetActive(false);
-    //            }
-    //        }
-    //    }
-    //}
 
     public void PauseGame(bool pause)
     {
@@ -133,6 +86,7 @@ public class GameController : MonoBehaviour
             }
         }
     }
+
     private void UpdateDebugInformationUI()
     {
         fpsCounter.text = string.Format("Framerate: {0:00.0} FPS", dbgInfo.GetFramerateSec());
