@@ -29,13 +29,15 @@ public class Disc : MonoBehaviour
             randomEulerAngle = randomEulerAngle * -1;
         }
         rb.velocity = Vector3.zero;
-        rb.AddForce(randomEulerAngle * speed, ForceMode.Acceleration);
+        rb.AddForce(randomEulerAngle * speed * 0.5f, ForceMode.Acceleration);
     }
 
     // Use this for initialization
     IEnumerator Start()
     {
+        rb.isKinematic = true;
         yield return new WaitForSeconds(1.0f);
+        rb.isKinematic = false;
         if (rb != null)
         {
             Throw(throwSpeed);

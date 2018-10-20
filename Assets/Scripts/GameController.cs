@@ -7,6 +7,7 @@ using Scripts.DebugInfo;
 
 public class GameController : MonoBehaviour
 {
+    private string gameMode;
     private bool isMainMenuVisible;
     public bool IsMainMenuVisible
     {
@@ -28,6 +29,9 @@ public class GameController : MonoBehaviour
         }
     }
     public GameObject demoModeCameraPivot;
+    public GameObject singlePlayerCamera;
+    public GameObject multiPlayerCamera;
+    public GameObject mainMenu;
     public List<GameObject> gameObjectsToFreezeOnPause;
     public List<GameObject> gameObjectsToEnableOnPause;
     public List<GameObject> gameObjectsToEnableOnUnpause;
@@ -40,6 +44,61 @@ public class GameController : MonoBehaviour
     public TMP_Text scoreInfo;
     public List<PlayerController> players;
     public GameObject disc;
+
+    public void EnableMenu(GameObject menu)
+    {
+        menu.SetActive(true);
+    }
+    public void DisableMenu(GameObject menu)
+    {
+        menu.SetActive(false);
+    }
+
+    public void SetGameState(string state)
+    {
+        switch(state)
+        {
+            case "demo": //Demo Code
+                gameMode = "demo";
+                for (int i = 0; i < players.Count; i++)
+                {
+                    players[i].aI = true;
+                    players[i].aiResponse = Random.Range(0.50f, 0.75f);
+                }
+                demoModeCameraPivot.SetActive(true);
+                singlePlayerCamera.SetActive(false);
+                multiPlayerCamera.SetActive(false);
+                break;
+
+            case "sp": //Single Player Code
+                gameMode = "sp";
+                players[0].aI = false;
+                players[1].aI = true;
+                demoModeCameraPivot.SetActive(false);
+                singlePlayerCamera.SetActive(true);
+                multiPlayerCamera.SetActive(false);
+                break;
+
+            case "mp": //Multiplayer Code
+                gameMode = "mp";
+                for (int i = 0; i < players.Count; i++)
+                {
+                    players[i].aI = false;
+                }
+                demoModeCameraPivot.SetActive(false);
+                singlePlayerCamera.SetActive(false);
+                multiPlayerCamera.SetActive(true);
+                break;
+            default:
+                Debug.LogError("Incorrect usage! Use \"demo\" for demo mode; \"sp\" for single player mode; and \"mp\" for multiplayer mode.");
+                break;
+        }
+    }
+    private void MainMenu()
+    {
+        SetGameState("demo");
+        mainMenu.SetActive(true);
+    }
 
     public void PauseGame(bool pause)
     {
@@ -128,6 +187,7 @@ public class GameController : MonoBehaviour
     void Start ()
     {
         FindPlayers();
+        MainMenu();
     }
 	// Update is called once per frame
 	void Update ()
@@ -140,5 +200,17 @@ public class GameController : MonoBehaviour
         {
             PauseGame(!IsPaused);
         }
-	}
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            SetGameState("demo");
+        }
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            SetGameState("sp");
+        }
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            SetGameState("mp");
+        }
+    }
 }

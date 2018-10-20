@@ -83,9 +83,9 @@ public class PlayerController : MonoBehaviour
         if (aI)
         {
             triggerAxisMultiplier = Mathf.Clamp(Input.GetAxis(triggerAxis), 0.2f, 1.0f); //Clamps the trigger speed. Lower value cannot be 0.0, otherwise the player wont move. Max should be 1.0, since it would be a neutral variable in the following code.
-            if (returnToStartingPosition)
+            if (returnToStartingPosition || Vector3.Distance(transform.position, target.transform.position) >= 7.5) 
             {
-                Vector3 lerpToStartPosition = Vector3.Lerp(transform.position, startPosition, aiResponse * 0.25f);
+                Vector3 lerpToStartPosition = Vector3.Lerp(transform.position, startPosition, aiResponse * Random.Range(0.25f, 1.0f));
                 rb.velocity = (lerpToStartPosition - transform.position) * speed * triggerAxisMultiplier * Time.fixedDeltaTime;
             }
             else
