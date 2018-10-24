@@ -16,42 +16,42 @@ public class NameInputScript : MonoBehaviour, ISelectHandler, IDeselectHandler
 
     public void OnSelect(BaseEventData eventData)
     {
-        if (axisNameVertical == "VERTICAL0")
+        if (axisNameVertical == "VerticalP1")
         {
-            eS.GetComponent<StandaloneInputModule>().horizontalAxis = "HORIZONTAL0";
-            eS.GetComponent<StandaloneInputModule>().verticalAxis = "VERTICAL0";
-            eS.GetComponent<StandaloneInputModule>().submitButton = "GREEN0";
-            eS.GetComponent<StandaloneInputModule>().cancelButton = "RED0";
+            eS.GetComponent<StandaloneInputModule>().horizontalAxis = "HorizontalP1";
+            eS.GetComponent<StandaloneInputModule>().verticalAxis = "VerticalP1";
+            eS.GetComponent<StandaloneInputModule>().submitButton = "Submit";
+            eS.GetComponent<StandaloneInputModule>().cancelButton = "Cancel";
         }
         else
         {
-            if (axisNameVertical == "VERTICAL1")
+            if (axisNameVertical == "VerticalP2")
             {
-                eS.GetComponent<StandaloneInputModule>().horizontalAxis = "HORIZONTAL1";
-                eS.GetComponent<StandaloneInputModule>().verticalAxis = "VERTICAL1";
-                eS.GetComponent<StandaloneInputModule>().submitButton = "GREEN1";
-                eS.GetComponent<StandaloneInputModule>().cancelButton = "RED1";
+                eS.GetComponent<StandaloneInputModule>().horizontalAxis = "HorizontalP2";
+                eS.GetComponent<StandaloneInputModule>().verticalAxis = "VerticalP2";
+                eS.GetComponent<StandaloneInputModule>().submitButton = "Submit";
+                eS.GetComponent<StandaloneInputModule>().cancelButton = "Cancel";
             }
         }
         isThisObjectSelected = true;
     }
     public void OnDeselect(BaseEventData eventData)
     {
-        if (axisNameVertical == "VERTICAL0")
+        if (axisNameVertical == "VerticalP1")
         {
-            eS.GetComponent<StandaloneInputModule>().horizontalAxis = "HORIZONTAL1";
-            eS.GetComponent<StandaloneInputModule>().verticalAxis = "VERTICAL1";
-            eS.GetComponent<StandaloneInputModule>().submitButton = "GREEN1";
-            eS.GetComponent<StandaloneInputModule>().cancelButton = "RED1";
+            eS.GetComponent<StandaloneInputModule>().horizontalAxis = "HorizontalP2";
+            eS.GetComponent<StandaloneInputModule>().verticalAxis = "VerticalP2";
+            eS.GetComponent<StandaloneInputModule>().submitButton = "Submit";
+            eS.GetComponent<StandaloneInputModule>().cancelButton = "Cancel";
         }
         else
         {
-            if (axisNameVertical == "VERTICAL1")
+            if (axisNameVertical == "VerticalP2")
             {
-                eS.GetComponent<StandaloneInputModule>().horizontalAxis = "HORIZONTAL0";
-                eS.GetComponent<StandaloneInputModule>().verticalAxis = "VERTICAL0";
-                eS.GetComponent<StandaloneInputModule>().submitButton = "GREEN0";
-                eS.GetComponent<StandaloneInputModule>().cancelButton = "RED0";
+                eS.GetComponent<StandaloneInputModule>().horizontalAxis = "HorizontalP1";
+                eS.GetComponent<StandaloneInputModule>().verticalAxis = "VerticalP1";
+                eS.GetComponent<StandaloneInputModule>().submitButton = "Submit";
+                eS.GetComponent<StandaloneInputModule>().cancelButton = "Cancel";
             }
         }
         isThisObjectSelected = false;

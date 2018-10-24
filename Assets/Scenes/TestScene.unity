@@ -13588,7 +13588,7 @@ MonoBehaviour:
         m_MethodName: DisableMenu
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 258858489}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -14888,7 +14888,7 @@ MonoBehaviour:
   scoreInfo: {fileID: 246713047}
   players: []
   disc: {fileID: 2087223100}
-  aiDifficultySlider: {fileID: 0}
+  aiDifficultySlider: {fileID: 1109890539}
 --- !u!114 &1160822664
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19822,7 +19822,7 @@ MonoBehaviour:
         m_MethodName: ReturnToMainMenu
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 258858489}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
