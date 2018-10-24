@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Scripts.DebugInfo;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
@@ -44,6 +45,7 @@ public class GameController : MonoBehaviour
     public TMP_Text scoreInfo;
     public List<PlayerController> players;
     public GameObject disc;
+    public Slider aiDifficultySlider;
 
     public void EnableMenu(GameObject menu)
     {
@@ -56,7 +58,7 @@ public class GameController : MonoBehaviour
 
     public void SetGameState(string state)
     {
-        switch(state)
+        switch (state)
         {
             case "demo": //Demo Code
                 gameMode = "demo";
@@ -94,6 +96,46 @@ public class GameController : MonoBehaviour
                 break;
         }
     }
+
+    public void StartGame(TMP_Dropdown dropdown)
+    {
+        switch(dropdown.value)
+        {
+            case 0:
+                SetGameState("sp");
+                for (int i =0; i < players.Count; i++)
+                {
+                    if (players[i].aI == true)
+                    {
+                        players[i].aiResponse = aiDifficultySlider.value;
+                    }
+                }
+                break;
+            case 1:
+                SetGameState("mp");
+                for (int i = 0; i < players.Count; i++)
+                {
+                    if (players[i].aI == true)
+                    {
+                        players[i].aiResponse = aiDifficultySlider.value;
+                    }
+                }
+                break;
+            case 2:
+                SetGameState("demo");
+                for (int i = 0; i < players.Count; i++)
+                {
+                    if (players[i].aI == true)
+                    {
+                        players[i].aiResponse = aiDifficultySlider.value;
+                    }
+                }
+                break;
+            default: Debug.LogError("Error!");
+                break;
+        }
+    }
+
     private void MainMenu()
     {
         SetGameState("demo");
