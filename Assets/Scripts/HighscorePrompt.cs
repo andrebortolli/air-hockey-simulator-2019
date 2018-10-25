@@ -7,9 +7,20 @@ using TMPro;
 
 public class HighscorePrompt : MonoBehaviour
 {
-
     public Button okButton;
     public TMP_Text okInfoText;
+    public bool isVSAI;
+    //public bool IsVSAI
+    //{
+    //    get
+    //    {
+    //        return isVSAI;
+    //    }
+    //    set
+    //    {
+    //        isVSAI = value;
+    //    }
+    //}
     public TMP_Text[] player1Name;
     public TMP_Text[] player2Name;
     public TMP_Text player1Score;
@@ -26,7 +37,26 @@ public class HighscorePrompt : MonoBehaviour
         highscoreController = FindObjectOfType<HighscoreController>();
         player1Score.text += gameController.players[0].GetPlayerScore();
         player2Score.text += gameController.players[1].GetPlayerScore();
-        highscoreListText.text = highscoreController.ListHighscoreFromPlayerPrefs(numberOfHighscoresToDisplay, false);
+        if (isVSAI)
+        {
+            for (int i = 0; i < player2Name.Length; i++)
+            {
+                player2Name[i].gameObject.GetComponentInParent<TMP_Dropdown>().interactable = false;
+            }
+            player2Name[0].GetComponentInParent<TMP_Dropdown>().value = 12;
+            player2Name[1].GetComponentInParent<TMP_Dropdown>().value = 0;
+            player2Name[2].GetComponentInParent<TMP_Dropdown>().value = 8;
+        }
+        else
+        {
+            for (int i = 0; i < player2Name.Length; i++)
+            {
+                player2Name[i].GetComponentInParent<TMP_Dropdown>().value = 0;
+                player2Name[i].gameObject.GetComponentInParent<TMP_Dropdown>().interactable = true;
+            }
+        }
+        //highscoreListText.text = highscoreController.ListHighscoreFromPlayerPrefs(numberOfHighscoresToDisplay, false); //PlayerPref
+        highscoreListText.text = highscoreController.ListHighscoreFromDatabase(numberOfHighscoresToDisplay);
         okInfoText.gameObject.SetActive(false);
         okButton.interactable = true;
     }
@@ -42,9 +72,11 @@ public class HighscorePrompt : MonoBehaviour
         {
             player2NameString = player2NameString + player2Name[i].text;
         }
-        highscoreController.HighscoreList.Add(new Highscore(player1NameString, player2NameString, gameController.players[0].GetPlayerScore(), gameController.players[1].GetPlayerScore()));
-        highscoreController.SaveHighscoreInPlayerPrefs(highscoreController.HighscoreList);
-        highscoreListText.text = highscoreController.ListHighscoreFromPlayerPrefs(numberOfHighscoresToDisplay, false);
+        //highscoreController.HighscoreList.Add(new Highscore(player1NameString, player2NameString, gameController.players[0].GetPlayerScore(), gameController.players[1].GetPlayerScore())); //PlayerPref
+        //highscoreController.SaveHighscoreInPlayerPrefs(highscoreController.HighscoreList); //PlayerPref
+        //highscoreListText.text = highscoreController.ListHighscoreFromPlayerPrefs(numberOfHighscoresToDisplay, false); //PlayerPref
+        highscoreController.SaveHighscoreInDatabase(new Highscore(player1NameString, player2NameString, gameController.players[0].GetPlayerScore(), gameController.players[1].GetPlayerScore()));
+        highscoreListText.text = highscoreController.ListHighscoreFromDatabase(numberOfHighscoresToDisplay);
         okButton.interactable = false;
         okInfoText.text = "Returning to Main Menu...";
         okInfoText.gameObject.SetActive(true);

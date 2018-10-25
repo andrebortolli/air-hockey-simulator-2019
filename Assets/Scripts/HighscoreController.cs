@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System.Data;
+using MySql.Data.MySqlClient;
 
 public class HighscoreController : MonoBehaviour
 {
-
-    public void Awake()
-    {
-        highscoreList = new List<Highscore>(ReadHighscoresFromPlayerPrefs());
-    }
+    private string source;
+    private string server = "sql10.freemysqlhosting.net";
+    private string database = "sql10262757";
+    private string userId = "sql10262757";
+    private bool pooling = false;
+    private string password = "";
+    private MySqlConnection connection;
 
     private List<Highscore> highscoreList;
     public List<Highscore> HighscoreList
@@ -22,6 +26,103 @@ public class HighscoreController : MonoBehaviour
         {
             highscoreList = new List<Highscore>(value);
         }
+    }
+
+    public void Awake()
+    {
+        this.source = string.Format("Server={0};Database={1};User ID={2};Pooling={3};Password={4}", server, database, userId, pooling, password);
+        highscoreList = new List<Highscore>(ReadHighscoresFromPlayerPrefs());
+    }
+
+    private void DBConnect(string source)
+    {
+        this.connection = new MySqlConnection(source);
+        try
+        {
+            this.connection.Open();
+            Debug.Log(string.Format("Connected to Database: {0}", connection.Site));
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogException(e);
+        }
+    }
+
+    private void DBDisconnect()
+    {
+        try
+        {
+            this.connection.Close();
+            Debug.Log(string.Format("Disconnected from Database: {0}", connection.Site));
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogException(e);
+        }
+    }
+
+    public List<Highscore> ReadHighscoreFromDatabase()
+    {
+        try
+        {
+            DBConnect(source);
+            MySqlCommand query = this.connection.CreateCommand();
+            query.CommandText = "SELECT * FROM sql10262757.Highscore";
+            MySqlDataReader data = query.ExecuteReader();
+            List<Highscore> aux = new List<Highscore>();
+            while (data.Read())
+            {
+                aux.Add(new Highscore((string)data["player1Name"], (string)data["player2Name"], (int)data["player1Score"], (int)data["player2Score"]));
+            }
+            DBDisconnect();
+            return aux;
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogException(e);
+            return null;
+        }
+    }
+
+    public string ListHighscoreFromDatabase(int size)
+    {
+        try
+        {
+            DBConnect(source);
+            MySqlCommand query = this.connection.CreateCommand();
+            query.CommandText = string.Format("SELECT * FROM {0} LIMIT 0, {1}", "sql10262757.Highscore", size);
+            MySqlDataReader data = query.ExecuteReader();
+            string output = "PLAYERS\t\t\tSCORES\n";
+            while (data.Read())
+            {
+                output = output + (string)data["player1Name"] + " | ";
+                output = output + (string)data["player2Name"] + " | ";
+                output = output + string.Format("{0:D2} | {1:D2}\n", (int)data["player1Score"], (int)data["player2Score"]);
+            }
+            DBDisconnect();
+            return output;
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogException(e);
+            return null;
+        }
+    }
+
+    public void SaveHighscoreInDatabase(Highscore input)
+    {
+        DBConnect(source);
+        try
+        {
+            MySqlCommand query = this.connection.CreateCommand();
+            query.CommandText = string.Format("INSERT INTO {0}(player1Name, player2Name, player1Score, player2Score) values ('{1}','{2}',{3},{4})", "sql10262757.Highscore", input.GetPlayer1Name(), input.GetPlayer2Name(), input.GetPlayer1Score(), input.GetPlayer2Score());
+            query.ExecuteNonQuery();
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogException(e);
+        }
+        DBDisconnect();
     }
 
     public List<Highscore> OrderHighscoreByScoreDescend(List<Highscore> input)
