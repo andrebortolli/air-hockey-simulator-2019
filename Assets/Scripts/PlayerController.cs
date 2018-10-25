@@ -35,6 +35,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void ResetPlayerScore()
+    {
+        player.Score = 0;
+    }
+
     public int GetPlayerScore()
     {
         return player.Score;

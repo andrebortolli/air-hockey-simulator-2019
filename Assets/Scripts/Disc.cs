@@ -40,6 +40,7 @@ public class Disc : MonoBehaviour
         rb.isKinematic = false;
         if (rb != null)
         {
+            rb.detectCollisions = true;
             Throw(throwSpeed);
         }
         yield return null;
@@ -64,6 +65,7 @@ public class Disc : MonoBehaviour
         {
             //Debug.Log("Player 2 scored a goal!");
             gameController.players[1].AddPlayerScore(1);
+            rb.detectCollisions = false;
             transform.position = startingPosition;
             if (sfx[3])
             {
@@ -75,6 +77,7 @@ public class Disc : MonoBehaviour
         {
             //Debug.Log("Player 1 scored a goal!");
             gameController.players[0].AddPlayerScore(1);
+            rb.detectCollisions = false;
             transform.position = startingPosition;
             if (sfx[3])
             {

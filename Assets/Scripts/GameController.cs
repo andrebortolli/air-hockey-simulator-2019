@@ -109,6 +109,7 @@ public class GameController : MonoBehaviour
                     {
                         players[i].aiResponse = aiDifficultySlider.value;
                     }
+                    players[i].ResetPlayerScore();
                 }
                 break;
             case 1:
@@ -119,6 +120,7 @@ public class GameController : MonoBehaviour
                     {
                         players[i].aiResponse = aiDifficultySlider.value;
                     }
+                    players[i].ResetPlayerScore();
                 }
                 break;
             case 2:
@@ -129,6 +131,7 @@ public class GameController : MonoBehaviour
                     {
                         players[i].aiResponse = aiDifficultySlider.value;
                     }
+                    players[i].ResetPlayerScore();
                 }
                 break;
             default: Debug.LogError("Error!");
