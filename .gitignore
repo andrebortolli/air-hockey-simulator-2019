@@ -34,3 +34,5 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+*.passw
+Assets/Passwords/highscore_db.passw.meta

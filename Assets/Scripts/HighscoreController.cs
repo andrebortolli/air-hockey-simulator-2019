@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System.Data;
+using System.IO;
 using MySql.Data.MySqlClient;
 
 public class HighscoreController : MonoBehaviour
@@ -30,8 +31,21 @@ public class HighscoreController : MonoBehaviour
 
     public void Awake()
     {
+        try
+        {
+            StreamReader streamReader = new StreamReader("Assets\\Passwords\\highscore_db.passw");
+            password = streamReader.ReadLine();
+        }
+        catch(System.Exception e)
+        {
+            Debug.LogException(e);
+        }
         this.source = string.Format("Server={0};Database={1};User ID={2};Pooling={3};Password={4}", server, database, userId, pooling, password);
-        highscoreList = new List<Highscore>(ReadHighscoresFromPlayerPrefs());
+    }
+
+    public void Start()
+    {
+        //highscoreList = new List<Highscore>(ReadHighscoreFromDatabase());
     }
 
     private void DBConnect(string source)
