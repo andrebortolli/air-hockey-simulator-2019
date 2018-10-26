@@ -44,6 +44,8 @@ public class GameController : MonoBehaviour
     public TMP_Text discInfo;
     public TMP_Text scoreInfo;
     public List<PlayerController> players;
+    public TMP_Text player1ScoreUI;
+    public TMP_Text player2ScoreUI;
     public GameObject disc;
     public Slider aiDifficultySlider;
 
@@ -240,7 +242,9 @@ public class GameController : MonoBehaviour
         if (enableDebug)
         {
             UpdateDebugInformationUI();
-        } 
+        }
+        player1ScoreUI.text = string.Format("{0}", players[0].GetPlayerScore());
+        player2ScoreUI.text = string.Format("{0}", players[1].GetPlayerScore());
         if (Input.GetKeyDown(KeyCode.P))
         {
             PauseGame(!IsPaused);
