@@ -48,6 +48,7 @@ public class PlayerController : MonoBehaviour
     public void AddPlayerScore(int scoreToAdd)
     {
         player.Score += scoreToAdd;
+        Debug.Log(player.Score);
     }
 
     //Instantiates players.

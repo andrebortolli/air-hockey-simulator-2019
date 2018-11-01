@@ -48,6 +48,7 @@ public class GameController : MonoBehaviour
     public TMP_Text player2ScoreUI;
     public GameObject disc;
     public Slider aiDifficultySlider;
+    private Timer gameTimer;
 
     public void EnableMenu(GameObject menu)
     {
@@ -72,6 +73,8 @@ public class GameController : MonoBehaviour
                 demoModeCameraPivot.SetActive(true);
                 singlePlayerCamera.SetActive(false);
                 multiPlayerCamera.SetActive(false);
+                gameTimer.ResetTimer();
+                gameTimer.ResumeTimer();
                 break;
 
             case "sp": //Single Player Code
@@ -81,6 +84,8 @@ public class GameController : MonoBehaviour
                 demoModeCameraPivot.SetActive(false);
                 singlePlayerCamera.SetActive(true);
                 multiPlayerCamera.SetActive(false);
+                gameTimer.ResetTimer();
+                gameTimer.ResumeTimer();
                 break;
 
             case "mp": //Multiplayer Code
@@ -92,6 +97,8 @@ public class GameController : MonoBehaviour
                 demoModeCameraPivot.SetActive(false);
                 singlePlayerCamera.SetActive(false);
                 multiPlayerCamera.SetActive(true);
+                gameTimer.ResetTimer();
+                gameTimer.ResumeTimer();
                 break;
             default:
                 Debug.LogError("Incorrect usage! Use \"demo\" for demo mode; \"sp\" for single player mode; and \"mp\" for multiplayer mode.");
@@ -101,11 +108,11 @@ public class GameController : MonoBehaviour
 
     public void StartGame(TMP_Dropdown dropdown)
     {
-        switch(dropdown.value)
+        switch (dropdown.value)
         {
             case 0:
                 SetGameState("sp");
-                for (int i =0; i < players.Count; i++)
+                for (int i = 0; i < players.Count; i++)
                 {
                     if (players[i].aI == true)
                     {
@@ -136,7 +143,8 @@ public class GameController : MonoBehaviour
                     players[i].ResetPlayerScore();
                 }
                 break;
-            default: Debug.LogError("Error!");
+            default:
+                Debug.LogError("Error!");
                 break;
         }
     }
@@ -147,7 +155,7 @@ public class GameController : MonoBehaviour
         mainMenu.SetActive(true);
     }
 
-    public void PauseGame(bool pause)
+    public void PauseGame(bool pause, bool showCanvas = true)
     {
         isPaused = pause;
         if (gameObjectsToFreezeOnPause != null)
@@ -170,14 +178,18 @@ public class GameController : MonoBehaviour
                         audioSource.UnPause();
                     }
                 }
-                foreach (GameObject go in gameObjectsToEnableOnPause)
+                if (showCanvas)
                 {
-                    go.SetActive(false);
+                    foreach (GameObject go in gameObjectsToEnableOnPause)
+                    {
+                        go.SetActive(false);
+                    }
+                    foreach (GameObject go in gameObjectsToEnableOnUnpause)
+                    {
+                        go.SetActive(true);
+                    }
                 }
-                foreach (GameObject go in gameObjectsToEnableOnUnpause)
-                {
-                    go.SetActive(true);
-                }
+                gameTimer.ResumeTimer();
             }
             else //Pause
             {
@@ -198,14 +210,18 @@ public class GameController : MonoBehaviour
                         audioSource.Pause();
                     }
                 }
-                foreach (GameObject go in gameObjectsToEnableOnPause)
+                if (showCanvas)
                 {
-                    go.SetActive(true);
+                    foreach (GameObject go in gameObjectsToEnableOnPause)
+                    {
+                        go.SetActive(true);
+                    }
+                    foreach (GameObject go in gameObjectsToEnableOnUnpause)
+                    {
+                        go.SetActive(false);
+                    }
                 }
-                foreach (GameObject go in gameObjectsToEnableOnUnpause)
-                {
-                    go.SetActive(false);
-                }
+                gameTimer.StopTimer();
             }
         }
     }
@@ -225,19 +241,20 @@ public class GameController : MonoBehaviour
 
     private void Awake()
     {
+        gameTimer = FindObjectOfType<Timer>();
         if (enableDebug)
         {
             dbgInfo = gameObject.AddComponent<DebugInformation>(); //Only adds the component if the checkbox is true on Inspector.
         }
     }
     // Use this for initialization
-    void Start ()
+    void Start()
     {
         FindPlayers();
         MainMenu();
     }
-	// Update is called once per frame
-	void Update ()
+    // Update is called once per frame
+    void Update()
     {
         if (enableDebug)
         {
