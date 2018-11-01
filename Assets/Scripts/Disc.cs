@@ -38,13 +38,16 @@ public class Disc : MonoBehaviour
     // Use this for initialization
     IEnumerator Start()
     {
+        yield return new WaitWhile(() => replayController.isReplaying() == true);
         isGoal = false;
         rb.isKinematic = true;
-        yield return new WaitForSeconds(1.0f);
+        transform.position = startingPosition;
+        yield return new WaitForSeconds(2.0f);
         rb.isKinematic = false;
         if (rb != null)
         {
             rb.detectCollisions = true;
+            replayController.SetRecordState(true);
             Throw(throwSpeed);
         }
         yield return null;
@@ -65,7 +68,7 @@ public class Disc : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (!isGoal)
+        if (!isGoal && replayController.isReplaying() == false)
         {
             if (other.gameObject.tag == "Back Goal")
             {
@@ -74,12 +77,12 @@ public class Disc : MonoBehaviour
                 //Debug.Log("Player 2 scored a goal!");
                 gameController.players[1].AddPlayerScore(1);
                 rb.detectCollisions = false;
-                transform.position = startingPosition;
+                //transform.position = startingPosition;
                 if (sfx[3])
                 {
                     PlaySFX(sfx[3]);
                 }
-                //replayController.PlayReplay(240);    
+                replayController.PlayReplay(240);
                 StopCoroutine(Start());
                 StartCoroutine(Start());  
             }
@@ -90,15 +93,19 @@ public class Disc : MonoBehaviour
                 //Debug.Log("Player 1 scored a goal!");
                 gameController.players[0].AddPlayerScore(1);
                 rb.detectCollisions = false;
-                transform.position = startingPosition;
+                //transform.position = startingPosition;
                 if (sfx[3])
                 {
                     PlaySFX(sfx[3]);
                 }
-                //replayController.PlayReplay(240);
+                replayController.PlayReplay(240);
                 StopCoroutine(Start());
                 StartCoroutine(Start());
             }
+        }
+        else
+        {
+            Debug.Log(replayController.isReplaying());
         }
     }
     private void OnCollisionEnter(Collision collision)

@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4851913226533366}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Target
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -57,7 +57,7 @@ GameObject:
   - component: {fileID: 4532319527815054}
   - component: {fileID: 114868381075805622}
   - component: {fileID: 65873963320256520}
-  m_Layer: 11
+  m_Layer: 12
   m_Name: Axis
   m_TagString: Untagged
   m_Icon: {fileID: 0}

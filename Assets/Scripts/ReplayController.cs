@@ -15,9 +15,18 @@ public class ReplayController : MonoBehaviour
 	void Awake ()
     {
         gameController = FindObjectOfType<GameController>();
+    }
+
+    private void Start()
+    {
         ResetReplayState();
     }
-	
+
+    public bool isReplaying()
+    {
+        return isReplay;
+    }
+
     void RecordGameObjects()
     {
         for (int i = 0; i < gameObjectsPositionXZAndRotation.Length; i++)
@@ -38,7 +47,7 @@ public class ReplayController : MonoBehaviour
         isReplay = false;
         record = false;
         replayFrame = 0;
-        //gameController.PauseGame(false, false);
+        gameController.PauseGame(false, false);
     }
 
     void PlayReplayFrames()
@@ -64,13 +73,13 @@ public class ReplayController : MonoBehaviour
     }
 
     // Update is called once per frame
-        void LateUpdate ()
+        void Update()
     {
         if (isReplay)
         {
             if (replayFrame == 0)
             {
-                //gameController.PauseGame(true, false);
+                gameController.PauseGame(true, false);
             }
             PlayReplayFrames();
             replayFrame++;

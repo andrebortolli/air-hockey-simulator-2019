@@ -242,6 +242,7 @@ public class GameController : MonoBehaviour
     private void Awake()
     {
         gameTimer = FindObjectOfType<Timer>();
+        frozenGameObjectsVelocities = new Vector3[gameObjectsToFreezeOnPause.Count];
         if (enableDebug)
         {
             dbgInfo = gameObject.AddComponent<DebugInformation>(); //Only adds the component if the checkbox is true on Inspector.
