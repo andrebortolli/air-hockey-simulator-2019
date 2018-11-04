@@ -220,104 +220,113 @@ public class GameController : MonoBehaviour
         mainMenu.SetActive(true);
     }
 
+    void ToggleFreezeGameObjects(bool toggle)
+    {
+        if (gameObjectsToFreezeOnPause != null)
+        {
+            if (toggle)
+            {
+                for (int i = 0; i < gameObjectsToFreezeOnPause.Count; i++)
+                {
+                    gameObjectsToFreezeOnPause[i].GetComponent<MonoBehaviour>().enabled = false;
+                    Rigidbody rb = gameObjectsToFreezeOnPause[i].GetComponent<Rigidbody>();
+                    AudioSource audioSource = gameObjectsToFreezeOnPause[i].GetComponent<AudioSource>();
+                    if (rb)
+                    {
+                        frozenGameObjectsVelocities[i] = rb.velocity;
+                        rb.isKinematic = true;
+                        rb.detectCollisions = false;
+                    }
+                    if (audioSource)
+                    {
+                        audioSource.Pause();
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < gameObjectsToFreezeOnPause.Count; i++)
+                {
+                    gameObjectsToFreezeOnPause[i].GetComponent<MonoBehaviour>().enabled = true;
+                    Rigidbody rb = gameObjectsToFreezeOnPause[i].GetComponent<Rigidbody>();
+                    AudioSource audioSource = gameObjectsToFreezeOnPause[i].GetComponent<AudioSource>();
+                    if (rb && frozenGameObjectsVelocities != null)
+                    {
+                        rb.isKinematic = false;
+                        rb.detectCollisions = true;
+                        rb.velocity = frozenGameObjectsVelocities[i];
+                    }
+                    if (audioSource)
+                    {
+                        audioSource.UnPause();
+                    }
+                }
+            }
+        }
+    }
+
     public void PauseGame(bool pause, bool showCanvas = true)
     {
-        if (!replayController.IsReplaying() && mainMenu.activeSelf == false)
+        if (mainMenu.activeSelf == false)
         {
             isPaused = pause;
-            if (gameObjectsToFreezeOnPause != null)
+            if (!isPaused) //Unpause
             {
-                if (!isPaused) //Unpause
+                ToggleFreezeGameObjects(false);
+                if (showCanvas)
                 {
-                    replayController.SetRecordState(true);
-                    for (int i = 0; i < gameObjectsToFreezeOnPause.Count; i++)
+                    ToggleCurrentGameModeCamera();
+                    if (gameObjectsToEnableOnPause != null)
                     {
-                        gameObjectsToFreezeOnPause[i].GetComponent<MonoBehaviour>().enabled = true;
-                        Rigidbody rb = gameObjectsToFreezeOnPause[i].GetComponent<Rigidbody>();
-                        AudioSource audioSource = gameObjectsToFreezeOnPause[i].GetComponent<AudioSource>();
-                        if (rb && frozenGameObjectsVelocities != null)
+                        foreach (GameObject go in gameObjectsToEnableOnPause)
                         {
-                            rb.isKinematic = false;
-                            rb.detectCollisions = true;
-                            rb.velocity = frozenGameObjectsVelocities[i];
-                        }
-                        if (audioSource)
-                        {
-                            audioSource.UnPause();
-                        }
-                    }
-                    if (showCanvas)
-                    {
-                        ToggleCurrentGameModeCamera();
-                        if (gameObjectsToEnableOnPause != null)
-                        {
-                            foreach (GameObject go in gameObjectsToEnableOnPause)
+                            if (go)
                             {
-                                if (go)
-                                {
-                                    go.SetActive(false);
-                                }
-                            }
-                        }
-                        if (gameObjectsToEnableOnUnpause != null)
-                        {
-                            foreach (GameObject go in gameObjectsToEnableOnUnpause)
-                            {
-                                if (go)
-                                {
-                                    go.SetActive(true);
-                                }
+                                go.SetActive(false);
                             }
                         }
                     }
-                    gameTimer.SetClockState(true);
+                    if (gameObjectsToEnableOnUnpause != null)
+                    {
+                        foreach (GameObject go in gameObjectsToEnableOnUnpause)
+                        {
+                            if (go)
+                            {
+                                go.SetActive(true);
+                            }
+                        }
+                    }
                 }
-                else //Pause
+                gameTimer.SetClockState(true);
+            }
+            else //Pause
+            {
+                ToggleFreezeGameObjects(true);
+                if (showCanvas)
                 {
-                    replayController.SetRecordState(false);
-                    frozenGameObjectsVelocities = new Vector3[gameObjectsToFreezeOnPause.Count];
-                    for (int i = 0; i < gameObjectsToFreezeOnPause.Count; i++)
+                    ToggleCamera("Demo Camera");
+                    if (gameObjectsToEnableOnPause != null)
                     {
-                        gameObjectsToFreezeOnPause[i].GetComponent<MonoBehaviour>().enabled = false;
-                        Rigidbody rb = gameObjectsToFreezeOnPause[i].GetComponent<Rigidbody>();
-                        AudioSource audioSource = gameObjectsToFreezeOnPause[i].GetComponent<AudioSource>();
-                        if (rb)
+                        foreach (GameObject go in gameObjectsToEnableOnPause)
                         {
-                            frozenGameObjectsVelocities[i] = rb.velocity;
-                            rb.isKinematic = true;
-                            rb.detectCollisions = false;
-                        }
-                        if (audioSource)
-                        {
-                            audioSource.Pause();
-                        }
-                    }
-                    if (showCanvas)
-                    {
-                        ToggleCamera("Demo Camera");
-                        if (gameObjectsToEnableOnPause != null)
-                        {
-                            foreach (GameObject go in gameObjectsToEnableOnPause)
+                            if (go)
                             {
-                                if (go)
-                                {
-                                    go.SetActive(true);
-                                }
-                            }
-                        }
-                        if (gameObjectsToEnableOnUnpause != null)
-                        {
-                            foreach (GameObject go in gameObjectsToEnableOnUnpause)
-                            {
-                                if (go)
-                                {
-                                    go.SetActive(false);
-                                }
+                                go.SetActive(true);
                             }
                         }
                     }
-                    gameTimer.SetClockState(false);
+                    if (gameObjectsToEnableOnUnpause != null)
+                    {
+                        foreach (GameObject go in gameObjectsToEnableOnUnpause)
+                        {
+                            if (go)
+                            {
+                                go.SetActive(false);
+                            }
+                        }
+                    }
                 }
+                gameTimer.SetClockState(false);
             }
         }
     }
