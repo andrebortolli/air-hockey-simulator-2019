@@ -81,6 +81,7 @@ public class GameController : MonoBehaviour
         switch (state)
         {
             case "demo": //Demo Code
+                Cursor.visible = true;
                 gameMode = "demo";
                 for (int i = 0; i < players.Count; i++)
                 {
@@ -94,6 +95,7 @@ public class GameController : MonoBehaviour
                 break;
 
             case "sp": //Single Player Code
+                Cursor.visible = false;
                 gameMode = "sp";
                 players[0].aI = false;
                 players[1].aI = true;
@@ -104,6 +106,7 @@ public class GameController : MonoBehaviour
                 break;
 
             case "mp": //Multiplayer Code
+                Cursor.visible = false;
                 gameMode = "mp";
                 for (int i = 0; i < players.Count; i++)
                 {
@@ -114,7 +117,6 @@ public class GameController : MonoBehaviour
                 gameTimer.ResetTimer();
                 gameTimer.SetClockState(true);
                 break;
-
             default:
                 Debug.LogError("Incorrect usage! Use \"demo\" for demo mode; \"sp\" for single player mode; and \"mp\" for multiplayer mode.");
                 break;
@@ -228,7 +230,14 @@ public class GameController : MonoBehaviour
             {
                 for (int i = 0; i < gameObjectsToFreezeOnPause.Count; i++)
                 {
-                    gameObjectsToFreezeOnPause[i].GetComponent<MonoBehaviour>().enabled = false;
+                    if (replayController.IsReplaying() && gameObjectsToFreezeOnPause[i].gameObject.tag == "BGM Controller")
+                    {
+                        gameObjectsToFreezeOnPause[i].GetComponent<MonoBehaviour>().enabled = true;
+                    }
+                    else
+                    {
+                        gameObjectsToFreezeOnPause[i].GetComponent<MonoBehaviour>().enabled = false;
+                    }
                     Rigidbody rb = gameObjectsToFreezeOnPause[i].GetComponent<Rigidbody>();
                     AudioSource audioSource = gameObjectsToFreezeOnPause[i].GetComponent<AudioSource>();
                     if (rb)
@@ -237,9 +246,12 @@ public class GameController : MonoBehaviour
                         rb.isKinematic = true;
                         rb.detectCollisions = false;
                     }
-                    if (audioSource)
+                    if (!replayController.IsReplaying())
                     {
-                        audioSource.Pause();
+                        if (audioSource)
+                        {
+                            audioSource.Pause();
+                        }
                     }
                 }
             }
@@ -256,9 +268,12 @@ public class GameController : MonoBehaviour
                         rb.detectCollisions = true;
                         rb.velocity = frozenGameObjectsVelocities[i];
                     }
-                    if (audioSource)
+                    if (!replayController.IsReplaying())
                     {
-                        audioSource.UnPause();
+                        if (audioSource)
+                        {
+                            audioSource.UnPause();
+                        }
                     }
                 }
             }
@@ -272,6 +287,7 @@ public class GameController : MonoBehaviour
             isPaused = pause;
             if (!isPaused) //Unpause
             {
+                Cursor.visible = false;
                 ToggleFreezeGameObjects(false);
                 if (showCanvas)
                 {
@@ -301,6 +317,7 @@ public class GameController : MonoBehaviour
             }
             else //Pause
             {
+                Cursor.visible = false;
                 ToggleFreezeGameObjects(true);
                 if (showCanvas)
                 {

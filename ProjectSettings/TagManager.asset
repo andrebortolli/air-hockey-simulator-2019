@@ -18,6 +18,7 @@ TagManager:
   - Replay Camera
   - SP Camera
   - MP Camera
+  - BGM Controller
   layers:
   - Default
   - TransparentFX

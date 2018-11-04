@@ -203,12 +203,12 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
-  - {fileID: 1921948903}
   - {fileID: 85165776}
   - {fileID: 258858490}
   - {fileID: 1417252159}
   - {fileID: 1615695323}
   - {fileID: 108097604}
+  - {fileID: 1921948903}
   m_Father: {fileID: 0}
   m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -621,7 +621,7 @@ RectTransform:
   - {fileID: 704996875}
   - {fileID: 472343125}
   m_Father: {fileID: 4802951}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -844,7 +844,7 @@ RectTransform:
   m_Children:
   - {fileID: 1228241376}
   m_Father: {fileID: 4802951}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2556,7 +2556,7 @@ RectTransform:
   - {fileID: 1268087045}
   - {fileID: 218724072}
   m_Father: {fileID: 4802951}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -10934,11 +10934,11 @@ GameObject:
   - component: {fileID: 680135771}
   m_Layer: 0
   m_Name: Background Music Controller
-  m_TagString: Untagged
+  m_TagString: BGM Controller
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!82 &680135771
 AudioSource:
   m_ObjectHideFlags: 0
@@ -11048,10 +11048,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playing: {fileID: 0}
   music:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 8300000, guid: 4ca089deb193db54cb3c973b619abca9, type: 3}
+  - {fileID: 8300000, guid: cb299b71d96d2a141b7bd3c1cc501476, type: 3}
+  - {fileID: 8300000, guid: 56fc5e79ee39ab64984dde28baa19597, type: 3}
+  - {fileID: 8300000, guid: 76841d8cc6251314080f4e93244bf6ab, type: 3}
 --- !u!4 &680135773
 Transform:
   m_ObjectHideFlags: 0
@@ -18062,7 +18062,7 @@ RectTransform:
   - {fileID: 1654281146}
   - {fileID: 938585637}
   m_Father: {fileID: 4802951}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -19913,7 +19913,7 @@ RectTransform:
   - {fileID: 480804628}
   - {fileID: 1990001399}
   m_Father: {fileID: 4802951}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -22257,7 +22257,7 @@ RectTransform:
   - {fileID: 575453764}
   - {fileID: 851851507}
   m_Father: {fileID: 4802951}
-  m_RootOrder: 0
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
