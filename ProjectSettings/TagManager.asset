@@ -13,6 +13,11 @@ TagManager:
   - Area Player 2
   - Wall
   - Corner
+  - DebugUI
+  - Demo Camera
+  - Replay Camera
+  - SP Camera
+  - MP Camera
   layers:
   - Default
   - TransparentFX

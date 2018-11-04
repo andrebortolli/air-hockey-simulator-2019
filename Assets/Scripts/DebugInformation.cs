@@ -1,5 +1,4 @@
-﻿//Programmed by: André Bortolli (RA: 16236796) and Gabriel Solano (RA: 16554685)
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Profiling;

@@ -7,14 +7,10 @@ public class Timer : MonoBehaviour
     private bool active;
     private float gameClock;
     Vector3Int gameClockHMS;
-
-    public void StopTimer()
+    
+    public void SetClockState(bool enabled)
     {
-        active = false;
-    }
-    public void ResumeTimer()
-    {
-        active = true;
+        active = enabled;
     }
     public Vector3Int GetGameClockXHYMZS()
     {

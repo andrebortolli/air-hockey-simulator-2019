@@ -35,22 +35,42 @@ public class Disc : MonoBehaviour
         rb.AddForce(randomEulerAngle * speed * 0.5f, ForceMode.Acceleration);
     }
 
-    // Use this for initialization
-    IEnumerator Start()
+    IEnumerator StartDisc(bool record = false)
     {
-        yield return new WaitWhile(() => replayController.isReplaying() == true);
+        while (replayController.IsReplaying() == true)
+        {
+            yield return new WaitForSeconds(.5f);
+            Debug.Log("Waiting for IsReplaying to become false.");
+        }
+        while (gameController.IsPaused == true)
+        {
+            yield return new WaitForSeconds(.5f);
+            Debug.Log("Waiting for IsPaused to become false.");
+        }
         isGoal = false;
         rb.isKinematic = true;
         transform.position = startingPosition;
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(1.0f);
         rb.isKinematic = false;
         if (rb != null)
         {
             rb.detectCollisions = true;
-            replayController.SetRecordState(true);
+            replayController.SetRecordState(record);
             Throw(throwSpeed);
         }
         yield return null;
+    }
+
+    public void ResetDisc(bool record)
+    {
+        StopCoroutine(StartDisc());
+        StartCoroutine(StartDisc(record));
+    }
+
+    // Use this for initialization
+    void Start()
+    {
+        StartCoroutine(StartDisc());
     }
 
     private void PlaySFX(AudioClip sfx)
@@ -68,11 +88,11 @@ public class Disc : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (!isGoal && replayController.isReplaying() == false)
+        if (!isGoal && replayController.IsReplaying() == false)
         {
             if (other.gameObject.tag == "Back Goal")
             {
-                Debug.Log(other.gameObject.GetInstanceID());
+                //Debug.Log(other.gameObject.GetInstanceID());
                 isGoal = true;
                 //Debug.Log("Player 2 scored a goal!");
                 gameController.players[1].AddPlayerScore(1);
@@ -83,12 +103,19 @@ public class Disc : MonoBehaviour
                     PlaySFX(sfx[3]);
                 }
                 replayController.PlayReplay(240);
-                StopCoroutine(Start());
-                StartCoroutine(Start());  
+                StopCoroutine(StartDisc());
+                if (gameController.GameMode != "demo")
+                {
+                    StartCoroutine(StartDisc(true));
+                }
+                else
+                {
+                    StartCoroutine(StartDisc());
+                }
             }
             if (other.gameObject.tag == "Front Goal")
             {
-                Debug.Log(other.gameObject.GetInstanceID());
+                //Debug.Log(other.gameObject.GetInstanceID());
                 isGoal = true;
                 //Debug.Log("Player 1 scored a goal!");
                 gameController.players[0].AddPlayerScore(1);
@@ -99,13 +126,16 @@ public class Disc : MonoBehaviour
                     PlaySFX(sfx[3]);
                 }
                 replayController.PlayReplay(240);
-                StopCoroutine(Start());
-                StartCoroutine(Start());
+                StopCoroutine(StartDisc());
+                if (gameController.GameMode != "demo")
+                {
+                    StartCoroutine(StartDisc(true));
+                }
+                else
+                {
+                    StartCoroutine(StartDisc());
+                }
             }
-        }
-        else
-        {
-            Debug.Log(replayController.isReplaying());
         }
     }
     private void OnCollisionEnter(Collision collision)

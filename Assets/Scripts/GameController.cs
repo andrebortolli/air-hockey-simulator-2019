@@ -1,5 +1,4 @@
-﻿//Programmed by: André Bortolli (RA: 16236796) and Gabriel Solano (RA: 16554685)
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -9,6 +8,13 @@ using UnityEngine.UI;
 public class GameController : MonoBehaviour
 {
     private string gameMode;
+    public string GameMode
+    {
+        get
+        {
+            return gameMode;
+        }
+    }
     private bool isMainMenuVisible;
     public bool IsMainMenuVisible
     {
@@ -29,26 +35,37 @@ public class GameController : MonoBehaviour
             return isPaused;
         }
     }
-    public GameObject demoModeCameraPivot;
-    public GameObject singlePlayerCamera;
-    public GameObject multiPlayerCamera;
     public GameObject mainMenu;
+    private ReplayController replayController;
+    private Timer gameTimer;
+    public GameObject[] cameras;
+
+    #region Pause
     public List<GameObject> gameObjectsToFreezeOnPause;
     public List<GameObject> gameObjectsToEnableOnPause;
     public List<GameObject> gameObjectsToEnableOnUnpause;
     public Vector3[] frozenGameObjectsVelocities;
+    #endregion
+
+    #region Debug
     public bool enableDebug;
     private DebugInformation dbgInfo;
     public TMP_Text fpsCounter;
     public TMP_Text frameCounter;
     public TMP_Text discInfo;
+    public TMP_Text recordingInfo;
     public TMP_Text scoreInfo;
-    public List<PlayerController> players;
+    #endregion
+
+    #region UI
     public TMP_Text player1ScoreUI;
     public TMP_Text player2ScoreUI;
-    public GameObject disc;
+    public TMP_Text timerUI;
+    #endregion
+
+    public List<PlayerController> players;
     public Slider aiDifficultySlider;
-    private Timer gameTimer;
+    public GameObject disc;
 
     public void EnableMenu(GameObject menu)
     {
@@ -68,24 +85,22 @@ public class GameController : MonoBehaviour
                 for (int i = 0; i < players.Count; i++)
                 {
                     players[i].aI = true;
-                    players[i].aiResponse = Random.Range(0.50f, 0.75f);
+                    players[i].aiResponse = Random.Range(0.50f, 0.85f);
                 }
-                demoModeCameraPivot.SetActive(true);
-                singlePlayerCamera.SetActive(false);
-                multiPlayerCamera.SetActive(false);
+                disc.GetComponent<Disc>().ResetDisc(false);
+                ToggleCamera("Demo Camera");
                 gameTimer.ResetTimer();
-                gameTimer.ResumeTimer();
+                gameTimer.SetClockState(true);
                 break;
 
             case "sp": //Single Player Code
                 gameMode = "sp";
                 players[0].aI = false;
                 players[1].aI = true;
-                demoModeCameraPivot.SetActive(false);
-                singlePlayerCamera.SetActive(true);
-                multiPlayerCamera.SetActive(false);
+                disc.GetComponent<Disc>().ResetDisc(true);
+                ToggleCamera("SP Camera");
                 gameTimer.ResetTimer();
-                gameTimer.ResumeTimer();
+                gameTimer.SetClockState(true);
                 break;
 
             case "mp": //Multiplayer Code
@@ -94,12 +109,12 @@ public class GameController : MonoBehaviour
                 {
                     players[i].aI = false;
                 }
-                demoModeCameraPivot.SetActive(false);
-                singlePlayerCamera.SetActive(false);
-                multiPlayerCamera.SetActive(true);
+                disc.GetComponent<Disc>().ResetDisc(true);
+                ToggleCamera("MP Camera");
                 gameTimer.ResetTimer();
-                gameTimer.ResumeTimer();
+                gameTimer.SetClockState(true);
                 break;
+
             default:
                 Debug.LogError("Incorrect usage! Use \"demo\" for demo mode; \"sp\" for single player mode; and \"mp\" for multiplayer mode.");
                 break;
@@ -149,6 +164,56 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public void ToggleCamera(string cameraTag)
+    {
+        for (int i = 0; i < cameras.Length; i++)
+        {
+            if (cameras[i].gameObject.tag == cameraTag)
+            {
+                cameras[i].SetActive(true);
+            }
+            else
+            {
+                cameras[i].SetActive(false);
+            }
+        }
+    }
+
+    public void ToggleCurrentGameModeCamera()
+    {
+        if (GameMode == "demo")
+        {
+            ToggleCamera("Demo Camera");
+        }
+        else if (GameMode == "sp")
+        {
+            ToggleCamera("SP Camera");
+        }
+        else if (GameMode == "mp")
+        {
+            ToggleCamera("MP Camera");
+        }
+    }
+
+    public GameObject ActiveCamera()
+    {
+        int activeCamerasNumber = 0;
+        GameObject activeCamera = null;
+        for (int i = 0; i < cameras.Length; i++)
+        {
+            if (cameras[i].activeSelf)
+            {
+                activeCamera = cameras[i];
+                activeCamerasNumber++;
+            }
+        }
+        if (activeCamerasNumber > 1)
+        {
+            Debug.LogWarning("More than one camera is active. Returning the last camera found active in the array.");
+        }
+        return activeCamera;
+    }
+
     private void MainMenu()
     {
         SetGameState("demo");
@@ -157,71 +222,102 @@ public class GameController : MonoBehaviour
 
     public void PauseGame(bool pause, bool showCanvas = true)
     {
-        isPaused = pause;
-        if (gameObjectsToFreezeOnPause != null)
+        if (!replayController.IsReplaying() && mainMenu.activeSelf == false)
         {
-            if (!isPaused) //Unpause
+            isPaused = pause;
+            if (gameObjectsToFreezeOnPause != null)
             {
-                for (int i = 0; i < gameObjectsToFreezeOnPause.Count; i++)
+                if (!isPaused) //Unpause
                 {
-                    gameObjectsToFreezeOnPause[i].GetComponent<MonoBehaviour>().enabled = true;
-                    Rigidbody rb = gameObjectsToFreezeOnPause[i].GetComponent<Rigidbody>();
-                    AudioSource audioSource = gameObjectsToFreezeOnPause[i].GetComponent<AudioSource>();
-                    if (rb && frozenGameObjectsVelocities != null)
+                    replayController.SetRecordState(true);
+                    for (int i = 0; i < gameObjectsToFreezeOnPause.Count; i++)
                     {
-                        rb.isKinematic = false;
-                        rb.detectCollisions = true;
-                        rb.velocity = frozenGameObjectsVelocities[i];
+                        gameObjectsToFreezeOnPause[i].GetComponent<MonoBehaviour>().enabled = true;
+                        Rigidbody rb = gameObjectsToFreezeOnPause[i].GetComponent<Rigidbody>();
+                        AudioSource audioSource = gameObjectsToFreezeOnPause[i].GetComponent<AudioSource>();
+                        if (rb && frozenGameObjectsVelocities != null)
+                        {
+                            rb.isKinematic = false;
+                            rb.detectCollisions = true;
+                            rb.velocity = frozenGameObjectsVelocities[i];
+                        }
+                        if (audioSource)
+                        {
+                            audioSource.UnPause();
+                        }
                     }
-                    if (audioSource)
+                    if (showCanvas)
                     {
-                        audioSource.UnPause();
+                        ToggleCurrentGameModeCamera();
+                        if (gameObjectsToEnableOnPause != null)
+                        {
+                            foreach (GameObject go in gameObjectsToEnableOnPause)
+                            {
+                                if (go)
+                                {
+                                    go.SetActive(false);
+                                }
+                            }
+                        }
+                        if (gameObjectsToEnableOnUnpause != null)
+                        {
+                            foreach (GameObject go in gameObjectsToEnableOnUnpause)
+                            {
+                                if (go)
+                                {
+                                    go.SetActive(true);
+                                }
+                            }
+                        }
                     }
+                    gameTimer.SetClockState(true);
                 }
-                if (showCanvas)
+                else //Pause
                 {
-                    foreach (GameObject go in gameObjectsToEnableOnPause)
+                    replayController.SetRecordState(false);
+                    frozenGameObjectsVelocities = new Vector3[gameObjectsToFreezeOnPause.Count];
+                    for (int i = 0; i < gameObjectsToFreezeOnPause.Count; i++)
                     {
-                        go.SetActive(false);
+                        gameObjectsToFreezeOnPause[i].GetComponent<MonoBehaviour>().enabled = false;
+                        Rigidbody rb = gameObjectsToFreezeOnPause[i].GetComponent<Rigidbody>();
+                        AudioSource audioSource = gameObjectsToFreezeOnPause[i].GetComponent<AudioSource>();
+                        if (rb)
+                        {
+                            frozenGameObjectsVelocities[i] = rb.velocity;
+                            rb.isKinematic = true;
+                            rb.detectCollisions = false;
+                        }
+                        if (audioSource)
+                        {
+                            audioSource.Pause();
+                        }
                     }
-                    foreach (GameObject go in gameObjectsToEnableOnUnpause)
+                    if (showCanvas)
                     {
-                        go.SetActive(true);
+                        ToggleCamera("Demo Camera");
+                        if (gameObjectsToEnableOnPause != null)
+                        {
+                            foreach (GameObject go in gameObjectsToEnableOnPause)
+                            {
+                                if (go)
+                                {
+                                    go.SetActive(true);
+                                }
+                            }
+                        }
+                        if (gameObjectsToEnableOnUnpause != null)
+                        {
+                            foreach (GameObject go in gameObjectsToEnableOnUnpause)
+                            {
+                                if (go)
+                                {
+                                    go.SetActive(false);
+                                }
+                            }
+                        }
                     }
+                    gameTimer.SetClockState(false);
                 }
-                gameTimer.ResumeTimer();
-            }
-            else //Pause
-            {
-                frozenGameObjectsVelocities = new Vector3[gameObjectsToFreezeOnPause.Count];
-                for (int i = 0; i < gameObjectsToFreezeOnPause.Count; i++)
-                {
-                    gameObjectsToFreezeOnPause[i].GetComponent<MonoBehaviour>().enabled = false;
-                    Rigidbody rb = gameObjectsToFreezeOnPause[i].GetComponent<Rigidbody>();
-                    AudioSource audioSource = gameObjectsToFreezeOnPause[i].GetComponent<AudioSource>();
-                    if (rb)
-                    {
-                        frozenGameObjectsVelocities[i] = rb.velocity;
-                        rb.isKinematic = true;
-                        rb.detectCollisions = false;
-                    }
-                    if (audioSource)
-                    {
-                        audioSource.Pause();
-                    }
-                }
-                if (showCanvas)
-                {
-                    foreach (GameObject go in gameObjectsToEnableOnPause)
-                    {
-                        go.SetActive(true);
-                    }
-                    foreach (GameObject go in gameObjectsToEnableOnUnpause)
-                    {
-                        go.SetActive(false);
-                    }
-                }
-                gameTimer.StopTimer();
             }
         }
     }
@@ -231,7 +327,8 @@ public class GameController : MonoBehaviour
         fpsCounter.text = string.Format("Framerate: {0:00.0} FPS", dbgInfo.GetFramerateSec());
         frameCounter.text = string.Format("Frametime: {0:00.0} ms / {1:00.0} ms", dbgInfo.GetFrametime(), dbgInfo.GetPhysicsFrametime()); //Not optimal, since Update time is slower than FixedUpdate. For now it works, but it would be best to separate Update and Physics time.
         discInfo.text = string.Format("Current Pos: {0}\nPredict Pos: {1}\nVelocity: {2}\nHeading: {3}\n", disc.transform.position, disc.GetComponentInChildren<Transform>().position, disc.GetComponent<Rigidbody>().velocity, disc.transform.eulerAngles.y);
-        scoreInfo.text = string.Format("Score: [{0} | {1}]\t\t\t", players[0].GetPlayerScore(), players[1].GetPlayerScore());
+        recordingInfo.text = string.Format("Recording:\t{0}\nIsReplaying:\t\t{1}\nCurrent Frame:\t{2}\nRecorded Frames:\t{3}", replayController.IsRecording(), replayController.IsReplaying(), replayController.CurrentFrame(), replayController.StoredFrame());
+        scoreInfo.text = string.Format("Game Mode:\t{0}\nScore:\t[{1}|{2}]\nIsAI:\t[{3}:{4}]\nAI Proficiency:\t[{5}|{6}]\nGame Paused:\t{7}", gameMode, players[0].GetPlayerScore(), players[1].GetPlayerScore(), players[0].aI, players[1].aI, players[0].aiResponse, players[1].aiResponse, isPaused);
     }
 
     public void FindPlayers()
@@ -242,6 +339,7 @@ public class GameController : MonoBehaviour
     private void Awake()
     {
         gameTimer = FindObjectOfType<Timer>();
+        replayController = FindObjectOfType<ReplayController>();
         frozenGameObjectsVelocities = new Vector3[gameObjectsToFreezeOnPause.Count];
         if (enableDebug)
         {
@@ -261,8 +359,13 @@ public class GameController : MonoBehaviour
         {
             UpdateDebugInformationUI();
         }
-        player1ScoreUI.text = string.Format("{0}", players[0].GetPlayerScore());
-        player2ScoreUI.text = string.Format("{0}", players[1].GetPlayerScore());
+        if (!replayController.IsReplaying())
+        {
+            player1ScoreUI.text = string.Format("{0}", players[0].GetPlayerScore());
+            player2ScoreUI.text = string.Format("{0}", players[1].GetPlayerScore());
+            timerUI.text = gameTimer.GetGameClockToString();
+        }
+
         if (Input.GetKeyDown(KeyCode.P))
         {
             PauseGame(!IsPaused);
