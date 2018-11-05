@@ -1,45 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEngine;
 
+[System.Serializable]
 public class Highscore
 {
-    
-    string player1Name, player2Name;
-    int player1Score, player2Score;
+    public int idHighscore, player1Score, player2Score;
+    public string player1Name, player2Name;
 
-    public Highscore()
+    public static Highscore CreateFromJSON(string jsonString)
     {
-        player1Name = "";
-        player2Name = "";
-        player1Score = 0;
-        player2Score = 0;
+        return JsonUtility.FromJson<Highscore>(jsonString);
     }
-
-    public Highscore(string player1Name, string player2Name, int player1Score, int player2Score)
+    public Highscore (string player1Name, string player2Name, int player1Score, int player2Score)
     {
         this.player1Name = player1Name;
         this.player2Name = player2Name;
         this.player1Score = player1Score;
         this.player2Score = player2Score;
-    }
-
-    public string GetPlayer1Name()
-    {
-        return player1Name;
-    }
-
-    public string GetPlayer2Name()
-    {
-        return player2Name;
-    }
-
-    public int GetPlayer1Score()
-    {
-        return player1Score;
-    }
-
-    public int GetPlayer2Score()
-    {
-        return player2Score;
     }
 }

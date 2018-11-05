@@ -44,7 +44,6 @@ public class HighscorePrompt : MonoBehaviour
                 player2Name[i].gameObject.GetComponentInParent<TMP_Dropdown>().interactable = true;
             }
         }
-        //highscoreListText.text = highscoreController.ListHighscoreFromPlayerPrefs(numberOfHighscoresToDisplay, false); //PlayerPref
         highscoreListText.text = highscoreController.ListHighscoreFromDatabase(numberOfHighscoresToDisplay);
         okInfoText.gameObject.SetActive(false);
         okButton.interactable = true;
@@ -61,9 +60,6 @@ public class HighscorePrompt : MonoBehaviour
         {
             player2NameString = player2NameString + player2Name[i].text;
         }
-        //highscoreController.HighscoreList.Add(new Highscore(player1NameString, player2NameString, gameController.players[0].GetPlayerScore(), gameController.players[1].GetPlayerScore())); //PlayerPref
-        //highscoreController.SaveHighscoreInPlayerPrefs(highscoreController.HighscoreList); //PlayerPref
-        //highscoreListText.text = highscoreController.ListHighscoreFromPlayerPrefs(numberOfHighscoresToDisplay, false); //PlayerPref
         highscoreController.SaveHighscoreInDatabase(new Highscore(player1NameString, player2NameString, gameController.players[0].GetPlayerScore(), gameController.players[1].GetPlayerScore()));
         highscoreListText.text = highscoreController.ListHighscoreFromDatabase(numberOfHighscoresToDisplay);
         okButton.interactable = false;
