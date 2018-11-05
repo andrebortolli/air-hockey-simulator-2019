@@ -91,7 +91,7 @@ public class PlayerController : MonoBehaviour
         //If the player type is AI, use AI movement code.
         if (aI)
         {
-            triggerAxisMultiplier = Mathf.Clamp(Input.GetAxis(triggerAxis), 0.2f, 1.0f); //Clamps the trigger speed. Lower value cannot be 0.0, otherwise the player wont move. Max should be 1.0, since it would be a neutral variable in the following code.
+            triggerAxisMultiplier = Mathf.Clamp(Mathf.Abs(Input.GetAxis(triggerAxis)), 0.2f, 1.0f); //Clamps the trigger speed. Lower value cannot be 0.0, otherwise the player wont move. Max should be 1.0, since it would be a neutral variable in the following code.
             if (returnToStartingPosition || Vector3.Distance(transform.position, target.transform.position) >= 7.5) 
             {
                 Vector3 lerpToStartPosition = Vector3.Lerp(transform.position, startPosition, aiResponse * Random.Range(0.25f, 1.0f));
@@ -106,7 +106,7 @@ public class PlayerController : MonoBehaviour
         }
         else //If the player type is not AI, use player movement code.
         {
-            triggerAxisMultiplier = Mathf.Clamp(Input.GetAxis(triggerAxis), 0.2f, 1.0f); //Clamps the trigger speed. Lower value cannot be 0.0, otherwise the player wont move. Max should be 1.0, since it would be a neutral variable in the following code.
+            triggerAxisMultiplier = Mathf.Clamp(Mathf.Abs(Input.GetAxis(triggerAxis)), 0.2f, 1.0f); //Clamps the trigger speed. Lower value cannot be 0.0, otherwise the player wont move. Max should be 1.0, since it would be a neutral variable in the following code.
             //Check if inverseControls are true, if yes use inverted controls.
             if (inverseControls)
             {

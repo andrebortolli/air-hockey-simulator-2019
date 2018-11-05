@@ -19448,7 +19448,6 @@ MonoBehaviour:
   - {fileID: 587635199}
   - {fileID: 1691198944}
   - {fileID: 2087223100}
-  - {fileID: 1194213354}
   - {fileID: 680135770}
   gameObjectsToEnableOnPause:
   - {fileID: 1615695322}
@@ -19657,11 +19656,6 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1188259377}
   m_CullTransparentMesh: 0
---- !u!1 &1194213354 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1279305742067878, guid: d92b33f7966f381438e09cf2503a03b4,
-    type: 2}
-  m_PrefabInternal: {fileID: 1889407073}
 --- !u!1 &1204267250
 GameObject:
   m_ObjectHideFlags: 0
