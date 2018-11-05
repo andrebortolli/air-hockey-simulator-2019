@@ -147,7 +147,23 @@ InputManager:
     snap: 1
     invert: 1
     type: 2
-    axis: 2
+    axis: 8
+    joyNum: 1
+  - serializedVersion: 3
+    m_Name: TriggerP1
+    descriptiveName: 
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: space
+    altNegativeButton: 
+    altPositiveButton: 
+    gravity: 0
+    dead: 0.1
+    sensitivity: 1
+    snap: 1
+    invert: 1
+    type: 2
+    axis: 9
     joyNum: 1
   - serializedVersion: 3
     m_Name: TriggerP2
@@ -163,7 +179,23 @@ InputManager:
     snap: 1
     invert: 1
     type: 2
-    axis: 2
+    axis: 8
+    joyNum: 2
+  - serializedVersion: 3
+    m_Name: TriggerP2
+    descriptiveName: 
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: 
+    altNegativeButton: 
+    altPositiveButton: 
+    gravity: 0
+    dead: 0.1
+    sensitivity: 1
+    snap: 1
+    invert: 1
+    type: 2
+    axis: 9
     joyNum: 2
   - serializedVersion: 3
     m_Name: 
