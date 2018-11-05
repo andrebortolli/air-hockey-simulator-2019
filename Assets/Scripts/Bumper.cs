@@ -17,7 +17,7 @@ public class Bumper : MonoBehaviour {
     {
         if (collision.gameObject.tag == "Disc")
         {
-            collision.gameObject.GetComponent<Rigidbody>().AddForce(collision.gameObject.GetComponent < Rigidbody>().velocity * Random.Range(25f, 50f), ForceMode.Acceleration);
+            collision.gameObject.GetComponent<Rigidbody>().AddForce(collision.gameObject.GetComponent < Rigidbody>().velocity * Random.Range(2f, 5f), ForceMode.Acceleration);
         }
     }
 }
