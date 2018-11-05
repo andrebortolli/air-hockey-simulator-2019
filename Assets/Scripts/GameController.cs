@@ -42,6 +42,7 @@ public class GameController : MonoBehaviour
     private ReplayCameraController replayCameraController;
     public GameObject[] cameras;
     private bool inGame = false;
+    public bool disablePausing = false;
 
     #region Pause
     public List<GameObject> gameObjectsToFreezeOnPause;
@@ -171,8 +172,9 @@ public class GameController : MonoBehaviour
     {
         switch (matchTimeDropdown.value)
         {
-            case 0: matchTime = 180f;
-                    break;
+            case 0:
+                matchTime = 180f;
+                break;
             case 1:
                 matchTime = 300f;
                 break;
@@ -195,7 +197,7 @@ public class GameController : MonoBehaviour
                 matchTime = 5400f;
                 break;
             default:
-                matchTime = 21387599f;
+                matchTime = 360000f;
                 break;
         }
         switch (gameTypeDropdown.value)
@@ -387,7 +389,7 @@ public class GameController : MonoBehaviour
 
     public void PauseGame(bool pause, bool showCanvas = true, bool pauseAudio = true)
     {
-        if (mainMenu.activeSelf == false)
+        if (mainMenu.activeSelf == false && disablePausing == false)
         {
             isPaused = pause;
             if (!isPaused) //Unpause
@@ -480,6 +482,10 @@ public class GameController : MonoBehaviour
         SetGameState("highscorePrompt");
     }
 
+    public void SetPause(bool pause)
+    {
+        PauseGame(pause);
+    }
     private void Awake()
     {
         gameTimer = FindObjectOfType<Timer>();

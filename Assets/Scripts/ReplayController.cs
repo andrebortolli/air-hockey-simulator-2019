@@ -75,7 +75,8 @@ public class ReplayController : MonoBehaviour
         isReplaying = false;
         record = false;
         replayFrame = 0;
-        gameController.PauseGame(false, false, false);
+        gameController.disablePausing = false;
+        gameController.PauseGame(false, false, false);  
         gameController.ToggleCurrentGameModeCamera();
         replayCameraToggled = false;
     }
@@ -115,6 +116,7 @@ public class ReplayController : MonoBehaviour
             isReplaying = true;
             gameController.SetReplayCamera();
             gameController.PauseGame(true, false, false);
+            gameController.disablePausing = true;
             replayFrame = gameObjectsPositionXZAndRotation[0].Count - frames;
             replayFrame = Mathf.Clamp(replayFrame, 0, gameObjectsPositionXZAndRotation[0].Count - 1);
         }
