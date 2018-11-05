@@ -38,7 +38,10 @@ public class GameController : MonoBehaviour
     public GameObject mainMenu;
     private ReplayController replayController;
     private Timer gameTimer;
+    public float matchTime = 3600f;
+    private ReplayCameraController replayCameraController;
     public GameObject[] cameras;
+    private bool inGame = false;
 
     #region Pause
     public List<GameObject> gameObjectsToFreezeOnPause;
@@ -61,6 +64,9 @@ public class GameController : MonoBehaviour
     public TMP_Text player1ScoreUI;
     public TMP_Text player2ScoreUI;
     public TMP_Text timerUI;
+    public TMP_Dropdown gameTypeDropdown;
+    public TMP_Dropdown matchTimeDropdown;
+    public HighscorePrompt highscorePrompt;
     #endregion
 
     public List<PlayerController> players;
@@ -83,49 +89,116 @@ public class GameController : MonoBehaviour
             case "demo": //Demo Code
                 Cursor.visible = true;
                 gameMode = "demo";
+                inGame = true;
                 for (int i = 0; i < players.Count; i++)
                 {
                     players[i].aI = true;
-                    players[i].aiResponse = Random.Range(0.50f, 0.85f);
+                    players[i].UpdatePlayerType();
                 }
                 disc.GetComponent<Disc>().ResetDisc(false);
                 ToggleCamera("Demo Camera");
-                gameTimer.ResetTimer();
+                gameTimer.ResetTimer(true, matchTime);
                 gameTimer.SetClockState(true);
                 break;
 
             case "sp": //Single Player Code
                 Cursor.visible = false;
                 gameMode = "sp";
+                inGame = true;
                 players[0].aI = false;
+                players[0].UpdatePlayerType();
                 players[1].aI = true;
+                players[1].UpdatePlayerType();
                 disc.GetComponent<Disc>().ResetDisc(true);
                 ToggleCamera("SP Camera");
-                gameTimer.ResetTimer();
+                gameTimer.ResetTimer(true, matchTime);
                 gameTimer.SetClockState(true);
                 break;
 
             case "mp": //Multiplayer Code
                 Cursor.visible = false;
                 gameMode = "mp";
+                inGame = true;
                 for (int i = 0; i < players.Count; i++)
                 {
                     players[i].aI = false;
+                    players[i].UpdatePlayerType();
                 }
                 disc.GetComponent<Disc>().ResetDisc(true);
                 ToggleCamera("MP Camera");
-                gameTimer.ResetTimer();
+                gameTimer.ResetTimer(true, matchTime);
                 gameTimer.SetClockState(true);
                 break;
+            case "menu":
+                Cursor.visible = true;
+                gameMode = "menu";
+                inGame = false;
+                gameTimer.ResetTimer(false, 0.0f);
+                replayController.ResetReplayState();
+                disc.GetComponent<Disc>().ResetDisc(false);
+                for (int i = 0; i < players.Count; i++)
+                {
+                    players[i].aI = true;
+                    players[i].aiResponse = Random.Range(0.50f, 0.85f);
+                    players[i].UpdatePlayerType();
+                }
+                ToggleCamera("Demo Camera");
+                gameTimer.SetClockState(true);
+                mainMenu.SetActive(true);
+                break;
+            case "highscorePrompt":
+                if (gameMode != "demo")
+                {
+                    Cursor.visible = true;
+                    gameMode = "menu";
+                    inGame = false;
+                    replayController.ResetReplayState();
+                    PauseGame(true, false, false);
+                    EnableMenu(highscorePrompt.gameObject);
+                }
+                else
+                {
+                    SetGameState("menu");
+                }
+                break;
             default:
-                Debug.LogError("Incorrect usage! Use \"demo\" for demo mode; \"sp\" for single player mode; and \"mp\" for multiplayer mode.");
+                Debug.LogError("Incorrect usage! Use \"demo\" for demo mode; \"sp\" for single player mode;  \"mp\" for multiplayer mode; and \"menu\" for Menu Mode.");
                 break;
         }
     }
 
-    public void StartGame(TMP_Dropdown dropdown)
+    public void StartGame()
     {
-        switch (dropdown.value)
+        switch (matchTimeDropdown.value)
+        {
+            case 0: matchTime = 180f;
+                    break;
+            case 1:
+                matchTime = 300f;
+                break;
+            case 2:
+                matchTime = 600f;
+                break;
+            case 3:
+                matchTime = 900f;
+                break;
+            case 4:
+                matchTime = 1800f;
+                break;
+            case 5:
+                matchTime = 2700f;
+                break;
+            case 6:
+                matchTime = 3600f;
+                break;
+            case 7:
+                matchTime = 5400f;
+                break;
+            default:
+                matchTime = 21387599f;
+                break;
+        }
+        switch (gameTypeDropdown.value)
         {
             case 0:
                 SetGameState("sp");
@@ -195,6 +268,39 @@ public class GameController : MonoBehaviour
         {
             ToggleCamera("MP Camera");
         }
+        else if (GameMode == "menu")
+        {
+            ToggleCamera("Demo Camera");
+        }
+    }
+
+    public void SetReplayCamera(bool random = true, int replayCameraNumber = 0)
+    {
+        int amountOfReplayCameras = 0;
+        int replayCameraArrayIndex = 0;
+        for (int i = 0; i < cameras.Length; i++)
+        {
+            if (cameras[i].tag == "Replay Camera")
+            {
+                replayCameraArrayIndex = i;
+                amountOfReplayCameras++;
+            }
+        }
+        if (amountOfReplayCameras > 1)
+        {
+            Debug.LogWarning("There is more than one Replay Camera active in the Array!");
+        }
+        else
+        {
+            if (random)
+            {
+                cameras[replayCameraArrayIndex] = replayCameraController.GetRandomCamera();
+            }
+            else
+            {
+                cameras[replayCameraArrayIndex] = replayCameraController.GetCamera(replayCameraNumber);
+            }
+        }
     }
 
     public GameObject ActiveCamera()
@@ -218,11 +324,10 @@ public class GameController : MonoBehaviour
 
     private void MainMenu()
     {
-        SetGameState("demo");
-        mainMenu.SetActive(true);
+        SetGameState("menu");
     }
 
-    void ToggleFreezeGameObjects(bool toggle)
+    void ToggleFreezeGameObjects(bool toggle, bool pauseAudio)
     {
         if (gameObjectsToFreezeOnPause != null)
         {
@@ -230,7 +335,7 @@ public class GameController : MonoBehaviour
             {
                 for (int i = 0; i < gameObjectsToFreezeOnPause.Count; i++)
                 {
-                    if (replayController.IsReplaying() && gameObjectsToFreezeOnPause[i].gameObject.tag == "BGM Controller")
+                    if (pauseAudio == false && gameObjectsToFreezeOnPause[i].gameObject.tag == "BGM Controller")
                     {
                         gameObjectsToFreezeOnPause[i].GetComponent<MonoBehaviour>().enabled = true;
                     }
@@ -246,7 +351,7 @@ public class GameController : MonoBehaviour
                         rb.isKinematic = true;
                         rb.detectCollisions = false;
                     }
-                    if (!replayController.IsReplaying())
+                    if (pauseAudio)
                     {
                         if (audioSource)
                         {
@@ -268,7 +373,7 @@ public class GameController : MonoBehaviour
                         rb.detectCollisions = true;
                         rb.velocity = frozenGameObjectsVelocities[i];
                     }
-                    if (!replayController.IsReplaying())
+                    if (pauseAudio)
                     {
                         if (audioSource)
                         {
@@ -280,17 +385,17 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void PauseGame(bool pause, bool showCanvas = true)
+    public void PauseGame(bool pause, bool showCanvas = true, bool pauseAudio = true)
     {
         if (mainMenu.activeSelf == false)
         {
             isPaused = pause;
             if (!isPaused) //Unpause
             {
-                Cursor.visible = false;
-                ToggleFreezeGameObjects(false);
+                ToggleFreezeGameObjects(false, pauseAudio);
                 if (showCanvas)
                 {
+                    Cursor.visible = false;
                     ToggleCurrentGameModeCamera();
                     if (gameObjectsToEnableOnPause != null)
                     {
@@ -317,10 +422,10 @@ public class GameController : MonoBehaviour
             }
             else //Pause
             {
-                Cursor.visible = false;
-                ToggleFreezeGameObjects(true);
+                ToggleFreezeGameObjects(true, pauseAudio);
                 if (showCanvas)
                 {
+                    Cursor.visible = true;
                     ToggleCamera("Demo Camera");
                     if (gameObjectsToEnableOnPause != null)
                     {
@@ -362,10 +467,24 @@ public class GameController : MonoBehaviour
         players = new List<PlayerController>(FindObjectsOfType<PlayerController>());
     }
 
+    void CheckIfGameOver()
+    {
+        if (gameTimer.GetGameClock() <= 0.0f && inGame == true)
+        {
+            GameOver();
+        }
+    }
+
+    void GameOver()
+    {
+        SetGameState("highscorePrompt");
+    }
+
     private void Awake()
     {
         gameTimer = FindObjectOfType<Timer>();
         replayController = FindObjectOfType<ReplayController>();
+        replayCameraController = FindObjectOfType<ReplayCameraController>();
         frozenGameObjectsVelocities = new Vector3[gameObjectsToFreezeOnPause.Count];
         if (enableDebug)
         {
@@ -381,6 +500,7 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        CheckIfGameOver();
         if (enableDebug)
         {
             UpdateDebugInformationUI();
@@ -407,6 +527,10 @@ public class GameController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.M))
         {
             SetGameState("mp");
+        }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            SetGameState("menu");
         }
     }
 }

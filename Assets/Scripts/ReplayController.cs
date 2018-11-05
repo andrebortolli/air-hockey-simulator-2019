@@ -10,6 +10,7 @@ public class ReplayController : MonoBehaviour
     private bool record = false;
     private int replayFrame = 0;
     private bool replayCameraToggled = false;
+    public float secondsToWaitBeforeReset = 1f;
     public GameObject[] gameObjectsToRecord;
     List<Vector3>[] gameObjectsPositionXZAndRotation;
     public TMP_Text[] textToRecord;
@@ -74,7 +75,7 @@ public class ReplayController : MonoBehaviour
         isReplaying = false;
         record = false;
         replayFrame = 0;
-        gameController.PauseGame(false, false);
+        gameController.PauseGame(false, false, false);
         gameController.ToggleCurrentGameModeCamera();
         replayCameraToggled = false;
     }
@@ -112,10 +113,18 @@ public class ReplayController : MonoBehaviour
         if (StoredFrame() != 0)
         {
             isReplaying = true;
-            gameController.PauseGame(true, false);
+            gameController.SetReplayCamera();
+            gameController.PauseGame(true, false, false);
             replayFrame = gameObjectsPositionXZAndRotation[0].Count - frames;
             replayFrame = Mathf.Clamp(replayFrame, 0, gameObjectsPositionXZAndRotation[0].Count - 1);
         }
+    }
+
+    IEnumerator WaitNSecondsAndResetReplayState(float n)
+    {
+        isReplaying = false;
+        yield return new WaitForSeconds(n);
+        ResetReplayState();
     }
 
     // Update is called once per frame
@@ -132,7 +141,7 @@ public class ReplayController : MonoBehaviour
             replayFrame++;
             if (replayFrame >= gameObjectsPositionXZAndRotation[0].Count)
             {
-                ResetReplayState();
+                StartCoroutine(WaitNSecondsAndResetReplayState(secondsToWaitBeforeReset));
             }
         }
         else

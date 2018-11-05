@@ -10,17 +10,6 @@ public class HighscorePrompt : MonoBehaviour
     public Button okButton;
     public TMP_Text okInfoText;
     public bool isVSAI;
-    //public bool IsVSAI
-    //{
-    //    get
-    //    {
-    //        return isVSAI;
-    //    }
-    //    set
-    //    {
-    //        isVSAI = value;
-    //    }
-    //}
     public TMP_Text[] player1Name;
     public TMP_Text[] player2Name;
     public TMP_Text player1Score;
@@ -84,13 +73,13 @@ public class HighscorePrompt : MonoBehaviour
 
     public void ReturnToMainMenu(GameObject mainMenu)
     {
-        StartCoroutine(WaitNSecondsAndReturnToMainMenu(timeToWaitBeforeReturningToMainMenu, mainMenu));
+        StartCoroutine(WaitNSecondsAndReturnToMainMenu(timeToWaitBeforeReturningToMainMenu));
     }
 
-    public IEnumerator WaitNSecondsAndReturnToMainMenu(float n, GameObject mainMenu)
+    public IEnumerator WaitNSecondsAndReturnToMainMenu(float n)
     {
         yield return new WaitForSeconds(n);
-        mainMenu.SetActive(true);
+        gameController.SetGameState("menu");
         this.gameObject.SetActive(false);
     }
 }

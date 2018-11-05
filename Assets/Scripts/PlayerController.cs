@@ -52,30 +52,33 @@ public class PlayerController : MonoBehaviour
     }
 
     //Instantiates players.
-    string UpdatePlayerType()
+    public string UpdatePlayerType()
     {
         string type; //Player type. AI or Player.
         //If player type is AI, create a new AI player.
         if (aI == true) 
         {
             player = new Player(speed); //Define player variable.
+            transform.position = startPosition;
             type = "AI"; //Set type to AI. (Report use only).
         }
         else //If player is not AI, create a new player, using the current script attributes.
         {
             player = new Player(speed, false, movementAxes[0], movementAxes[1]); //Define player variable.
+            transform.position = startPosition;
             type = "Player"; //Set type to Player. (Report use only).
         }
         aILast = aI; //Sets the toggle helper
+        print(string.Format("Player Type changed from to {0}, with the following axes: {1}", type, movementAxes[0] + " " + movementAxes[1]));
         return string.Format("Player Type changed from to {0}, with the following axes: {1}", type, movementAxes[0] + " " + movementAxes[1]); //Report to console.
     }
 
     private void Awake()
-    {
-        UpdatePlayerType(); //Set player type on Awake.
+    {    
         rb = GetComponent<Rigidbody>(); //Get and set the GameObject's Rigidbody on Awake.
         gameController = FindObjectOfType<GameController>();
         startPosition = transform.position;
+        //UpdatePlayerType(); //Set player type on Awake.
     }
 
 	void FixedUpdate ()

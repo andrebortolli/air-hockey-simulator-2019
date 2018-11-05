@@ -5,6 +5,7 @@ using UnityEngine;
 public class Timer : MonoBehaviour
 {
     private bool active;
+    public bool decrement = false;
     private float gameClock;
     Vector3Int gameClockHMS;
     
@@ -12,24 +13,52 @@ public class Timer : MonoBehaviour
     {
         active = enabled;
     }
+
+    public float GetGameClock()
+    {
+        return gameClock;
+    }
+
     public Vector3Int GetGameClockXHYMZS()
     {
         return gameClockHMS;
     }
     public string GetGameClockToString()
     {
-        return string.Format("{0:D2}:{1:D2}:{2:D2}", gameClockHMS.x, gameClockHMS.y, gameClockHMS.z);
+        if(gameClock >= 3600)
+        {
+            return string.Format("{0:D2}:{1:D2}:{2:D2}", gameClockHMS.x, gameClockHMS.y, gameClockHMS.z);
+        }
+        else
+        {
+            return string.Format("{0:D2}:{1:D2}", gameClockHMS.y, gameClockHMS.z);
+        }
     }
-    public void ResetTimer()
+    public void ResetTimer(bool decrement, float timeToSet)
     {
-        gameClock = 0.0f;
+        this.decrement = decrement;
+        if (decrement == true)
+        {
+            gameClock = timeToSet;
+        }
+        else
+        {
+            gameClock = 0.0f;
+        }
     }
 
 	void Update ()
     {
 		if (active)
         {
-            gameClock += Time.deltaTime;
+            if (decrement)
+            {
+                gameClock -= Time.deltaTime;
+            }
+            else
+            {
+                gameClock += Time.deltaTime;
+            }
             gameClockHMS = new Vector3Int((int) gameClock / 3600, (int) (gameClock / 60) % 60, (int) (gameClock % 60));
         }
 	}

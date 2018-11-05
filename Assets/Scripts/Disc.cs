@@ -86,7 +86,7 @@ public class Disc : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (!isGoal && replayController.IsReplaying() == false)
         {
