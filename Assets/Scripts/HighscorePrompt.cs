@@ -33,9 +33,9 @@ public class HighscorePrompt : MonoBehaviour
             {
                 for (int i = 0; i < player1Name.Length; i++)
                 {
-                    player1Name[i].GetComponentInParent<TMP_Dropdown>().value = 0;
-                    player1Name[i].gameObject.GetComponentInParent<TMP_Dropdown>().interactable = true;
                     player1Name[i].gameObject.transform.parent.gameObject.SetActive(true);
+                    player1Name[i].GetComponentInParent<TMP_Dropdown>().value = 0;
+                    player1Name[i].gameObject.GetComponentInParent<TMP_Dropdown>().interactable = true;                 
                 }
                 for (int i = 0; i < player2Name.Length; i++)
                 {
@@ -49,15 +49,15 @@ public class HighscorePrompt : MonoBehaviour
             {
                 for (int i = 0; i < player1Name.Length; i++)
                 {
+                    player1Name[i].gameObject.transform.parent.gameObject.SetActive(true);
                     player1Name[i].GetComponentInParent<TMP_Dropdown>().value = 0;
                     player1Name[i].gameObject.GetComponentInParent<TMP_Dropdown>().interactable = true;
-                    player1Name[i].gameObject.transform.parent.gameObject.SetActive(true);
                 }
                 for (int i = 0; i < player2Name.Length; i++)
                 {
+                    player2Name[i].gameObject.transform.parent.gameObject.SetActive(true);
                     player2Name[i].GetComponentInParent<TMP_Dropdown>().value = 0;
                     player2Name[i].gameObject.GetComponentInParent<TMP_Dropdown>().interactable = true;
-                    player2Name[i].gameObject.transform.parent.gameObject.SetActive(true);
                 }
             }
         }
