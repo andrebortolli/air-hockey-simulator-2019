@@ -97,6 +97,9 @@ public class GameController : MonoBehaviour
                     players[i].UpdatePlayerType();
                 }
                 disc.GetComponent<Disc>().ResetDisc(false);
+                player1ScoreUI.gameObject.SetActive(true);
+                player2ScoreUI.gameObject.SetActive(true);
+                timerUI.gameObject.SetActive(true);
                 ToggleCamera("Demo Camera");
                 gameTimer.ResetTimer(true, matchTime);
                 gameTimer.SetClockState(true);
@@ -111,6 +114,9 @@ public class GameController : MonoBehaviour
                 players[1].aI = true;
                 players[1].UpdatePlayerType();
                 disc.GetComponent<Disc>().ResetDisc(true);
+                player1ScoreUI.gameObject.SetActive(true);
+                player2ScoreUI.gameObject.SetActive(true);
+                timerUI.gameObject.SetActive(true);
                 ToggleCamera("SP Camera");
                 gameTimer.ResetTimer(true, matchTime);
                 gameTimer.SetClockState(true);
@@ -126,6 +132,9 @@ public class GameController : MonoBehaviour
                     players[i].UpdatePlayerType();
                 }
                 disc.GetComponent<Disc>().ResetDisc(true);
+                player1ScoreUI.gameObject.SetActive(true);
+                player2ScoreUI.gameObject.SetActive(true);
+                timerUI.gameObject.SetActive(true);
                 ToggleCamera("MP Camera");
                 gameTimer.ResetTimer(true, matchTime);
                 gameTimer.SetClockState(true);
@@ -137,6 +146,9 @@ public class GameController : MonoBehaviour
                 gameTimer.ResetTimer(false, 0.0f);
                 replayController.ResetReplayState();
                 disc.GetComponent<Disc>().ResetDisc(false);
+                player1ScoreUI.gameObject.SetActive(false);
+                player2ScoreUI.gameObject.SetActive(false);
+                timerUI.gameObject.SetActive(false);
                 for (int i = 0; i < players.Count; i++)
                 {
                     players[i].aI = true;
@@ -154,6 +166,9 @@ public class GameController : MonoBehaviour
                     gameMode = "menu";
                     inGame = false;
                     replayController.ResetReplayState();
+                    player1ScoreUI.gameObject.SetActive(false);
+                    player2ScoreUI.gameObject.SetActive(false);
+                    timerUI.gameObject.SetActive(false);
                     PauseGame(true, false, false);
                     EnableMenu(highscorePrompt.gameObject);
                 }

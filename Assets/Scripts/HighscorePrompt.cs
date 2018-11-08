@@ -24,6 +24,7 @@ public class HighscorePrompt : MonoBehaviour
     {
         gameController = FindObjectOfType<GameController>();
         highscoreController = FindObjectOfType<HighscoreController>();
+        highscoreController.DownloadedHighscoreListToString += HighscoreController_DownloadedHighscoreListToString;
         player1Score.text += gameController.players[0].GetPlayerScore();
         player2Score.text += gameController.players[1].GetPlayerScore();
         if (isVSAI)
@@ -44,11 +45,16 @@ public class HighscorePrompt : MonoBehaviour
                 player2Name[i].gameObject.GetComponentInParent<TMP_Dropdown>().interactable = true;
             }
         }
-        highscoreListText.text = highscoreController.ListHighscoreFromDatabase(numberOfHighscoresToDisplay);
+        StartCoroutine(highscoreController.StartHighscoreDownload(true, numberOfHighscoresToDisplay));
         okInfoText.gameObject.SetActive(false);
         okButton.interactable = true;
     }
-	
+
+    private void HighscoreController_DownloadedHighscoreListToString(string highscoreText)
+    {
+        highscoreListText.text = highscoreText;
+    }
+
     public void Ok()
     {
         string player1NameString = "", player2NameString = "";
@@ -60,11 +66,19 @@ public class HighscorePrompt : MonoBehaviour
         {
             player2NameString = player2NameString + player2Name[i].text;
         }
-        highscoreController.SaveHighscoreInDatabase(new Highscore(player1NameString, player2NameString, gameController.players[0].GetPlayerScore(), gameController.players[1].GetPlayerScore()));
-        highscoreListText.text = highscoreController.ListHighscoreFromDatabase(numberOfHighscoresToDisplay);
+        StartCoroutine(SendHighscoreAndDisplay(new Highscore(player1NameString, player2NameString, gameController.players[0].GetPlayerScore(), gameController.players[1].GetPlayerScore())));
+        //StartCoroutine(highscoreController.SaveHighscoreInDatabase(new Highscore(player1NameString, player2NameString, gameController.players[0].GetPlayerScore(), gameController.players[1].GetPlayerScore())));
+        //StartCoroutine(highscoreController.StartHighscoreDownload(true, numberOfHighscoresToDisplay));
         okButton.interactable = false;
         okInfoText.text = "Returning to Main Menu...";
         okInfoText.gameObject.SetActive(true);
+    }
+
+    IEnumerator SendHighscoreAndDisplay(Highscore highscoreToSend)
+    {
+        yield return highscoreController.SaveHighscoreInDatabase(highscoreToSend);
+        StartCoroutine(highscoreController.StartHighscoreDownload(true, numberOfHighscoresToDisplay));
+        yield return null;
     }
 
     public void ReturnToMainMenu(GameObject mainMenu)
@@ -77,5 +91,6 @@ public class HighscorePrompt : MonoBehaviour
         yield return new WaitForSeconds(n);
         gameController.SetGameState("menu");
         this.gameObject.SetActive(false);
+        yield return null;
     }
 }
