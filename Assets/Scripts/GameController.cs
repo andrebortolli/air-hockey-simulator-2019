@@ -50,6 +50,7 @@ public class GameController : MonoBehaviour
             return isVSAI;
         }
     }
+    public bool isHighscoreEditMode = false;
     public bool disablePausing = false;
 
     #region Pause
@@ -100,6 +101,7 @@ public class GameController : MonoBehaviour
                 gameMode = "demo";
                 inGame = true;
                 isVSAI = true;
+                isHighscoreEditMode = false;
                 for (int i = 0; i < players.Count; i++)
                 {
                     players[i].aI = true;
@@ -119,6 +121,7 @@ public class GameController : MonoBehaviour
                 gameMode = "sp";
                 inGame = true;
                 isVSAI = true;
+                isHighscoreEditMode = true;
                 players[0].aI = false;
                 players[0].UpdatePlayerType();
                 players[1].aI = true;
@@ -137,6 +140,7 @@ public class GameController : MonoBehaviour
                 gameMode = "mp";
                 inGame = true;
                 isVSAI = false;
+                isHighscoreEditMode = true;
                 for (int i = 0; i < players.Count; i++)
                 {
                     players[i].aI = false;
@@ -155,6 +159,7 @@ public class GameController : MonoBehaviour
                 gameMode = "menu";
                 inGame = false;
                 isVSAI = false;
+                isHighscoreEditMode = false;
                 gameTimer.ResetTimer(false, 0.0f);
                 replayController.ResetReplayState();
                 disc.GetComponent<Disc>().ResetDisc(false);

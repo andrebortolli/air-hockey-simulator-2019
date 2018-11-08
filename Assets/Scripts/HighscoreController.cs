@@ -29,18 +29,26 @@ public class HighscoreController : MonoBehaviour
             connection = new WWW(databaseURL + "/highscore/listHighscores");
         }
         yield return connection;
-        HighscoreList highscoreListDB = HighscoreList.CreateFromJSON(connection.text);
-        if (ToString)
+        if (connection.error == null)
         {
-            ListHighscoreFromHighscoreList(highscoreListDB, limitSize);
+            Debug.Log("Highscore successfully downloaded!");
+            HighscoreList highscoreListDB = HighscoreList.CreateFromJSON(connection.text);
+            if (ToString)
+            {
+                ListHighscoreFromHighscoreList(highscoreListDB, limitSize);
+            }
+            else
+            {
+                if (DownloadedHighscoreList != null)
+                {
+                    DownloadedHighscoreList(highscoreListDB);
+                }
+            }
         }
         else
         {
-            if (DownloadedHighscoreList != null)
-            {
-                DownloadedHighscoreList(highscoreListDB);
-            }
-        }
+            Debug.Log("Error: " + connection.error);
+        }  
         yield return null;
     }
 
@@ -70,5 +78,13 @@ public class HighscoreController : MonoBehaviour
         form.AddField("player2Score", input.player2Score);
         WWW connection = new WWW(databaseURL + "/highscore/insertHighscore", form);
         yield return connection;
+        if (connection.error == null)
+        {
+            Debug.Log("Highscore successfully inserted!");
+        }
+        else
+        {
+            Debug.Log("Error: " + connection.error);
+        }
     }
 }

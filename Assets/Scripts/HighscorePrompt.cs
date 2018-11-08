@@ -24,34 +24,61 @@ public class HighscorePrompt : MonoBehaviour
         gameController = FindObjectOfType<GameController>();
         highscoreController = FindObjectOfType<HighscoreController>();
         highscoreController.DownloadedHighscoreListToString += HighscoreController_DownloadedHighscoreListToString;
+        StartCoroutine(highscoreController.StartHighscoreDownload(true, numberOfHighscoresToDisplay));
         player1Score.text += gameController.players[0].GetPlayerScore();
         player2Score.text += gameController.players[1].GetPlayerScore();
-        if (gameController.IsVSAI)
+        if (gameController.isHighscoreEditMode)
         {
-            for (int i = 0; i < player2Name.Length; i++)
+            if (gameController.IsVSAI)
             {
-                player2Name[i].gameObject.GetComponentInParent<TMP_Dropdown>().interactable = false;
+                for (int i = 0; i < player1Name.Length; i++)
+                {
+                    player1Name[i].GetComponentInParent<TMP_Dropdown>().value = 0;
+                    player1Name[i].gameObject.GetComponentInParent<TMP_Dropdown>().interactable = true;
+                    player1Name[i].gameObject.transform.parent.gameObject.SetActive(true);
+                }
+                for (int i = 0; i < player2Name.Length; i++)
+                {
+                    player2Name[i].gameObject.GetComponentInParent<TMP_Dropdown>().interactable = false;
+                }
+                player2Name[0].GetComponentInParent<TMP_Dropdown>().value = 12;
+                player2Name[1].GetComponentInParent<TMP_Dropdown>().value = 0;
+                player2Name[2].GetComponentInParent<TMP_Dropdown>().value = 8;
             }
-            player2Name[0].GetComponentInParent<TMP_Dropdown>().value = 12;
-            player2Name[1].GetComponentInParent<TMP_Dropdown>().value = 0;
-            player2Name[2].GetComponentInParent<TMP_Dropdown>().value = 8;
+            else
+            {
+                for (int i = 0; i < player1Name.Length; i++)
+                {
+                    player1Name[i].GetComponentInParent<TMP_Dropdown>().value = 0;
+                    player1Name[i].gameObject.GetComponentInParent<TMP_Dropdown>().interactable = true;
+                    player1Name[i].gameObject.transform.parent.gameObject.SetActive(true);
+                }
+                for (int i = 0; i < player2Name.Length; i++)
+                {
+                    player2Name[i].GetComponentInParent<TMP_Dropdown>().value = 0;
+                    player2Name[i].gameObject.GetComponentInParent<TMP_Dropdown>().interactable = true;
+                    player2Name[i].gameObject.transform.parent.gameObject.SetActive(true);
+                }
+            }
         }
         else
         {
-            for (int i = 0; i < player1Name.Length; i++)
+            for (int i= 0; i < player1Name.Length; i++)
             {
-                player1Name[i].GetComponentInParent<TMP_Dropdown>().value = 0;
-                player1Name[i].gameObject.GetComponentInParent<TMP_Dropdown>().interactable = true;
+                player1Name[i].gameObject.transform.parent.gameObject.SetActive(false);
             }
             for (int i = 0; i < player2Name.Length; i++)
             {
-                player2Name[i].GetComponentInParent<TMP_Dropdown>().value = 0;
-                player2Name[i].gameObject.GetComponentInParent<TMP_Dropdown>().interactable = true;
+                player2Name[i].gameObject.transform.parent.gameObject.SetActive(false);
             }
         }
-        StartCoroutine(highscoreController.StartHighscoreDownload(true, numberOfHighscoresToDisplay));
         okInfoText.gameObject.SetActive(false);
         okButton.interactable = true;
+    }
+
+    private void OnDisable()
+    {
+        highscoreController.DownloadedHighscoreListToString -= HighscoreController_DownloadedHighscoreListToString;
     }
 
     private void HighscoreController_DownloadedHighscoreListToString(string highscoreText)
@@ -61,18 +88,19 @@ public class HighscorePrompt : MonoBehaviour
 
     public void Ok()
     {
-        string player1NameString = "", player2NameString = "";
-        for (int i = 0; i < player1Name.Length; i++)
+        if (gameController.isHighscoreEditMode)
         {
-            player1NameString = player1NameString + player1Name[i].text;
+            string player1NameString = "", player2NameString = "";
+            for (int i = 0; i < player1Name.Length; i++)
+            {
+                player1NameString = player1NameString + player1Name[i].text;
+            }
+            for (int i = 0; i < player2Name.Length; i++)
+            {
+                player2NameString = player2NameString + player2Name[i].text;
+            }
+            StartCoroutine(SendHighscoreAndDisplay(new Highscore(player1NameString, player2NameString, gameController.players[0].GetPlayerScore(), gameController.players[1].GetPlayerScore())));
         }
-        for (int i = 0; i < player2Name.Length; i++)
-        {
-            player2NameString = player2NameString + player2Name[i].text;
-        }
-        StartCoroutine(SendHighscoreAndDisplay(new Highscore(player1NameString, player2NameString, gameController.players[0].GetPlayerScore(), gameController.players[1].GetPlayerScore())));
-        //StartCoroutine(highscoreController.SaveHighscoreInDatabase(new Highscore(player1NameString, player2NameString, gameController.players[0].GetPlayerScore(), gameController.players[1].GetPlayerScore())));
-        //StartCoroutine(highscoreController.StartHighscoreDownload(true, numberOfHighscoresToDisplay));
         okButton.interactable = false;
         okInfoText.text = "Returning to Main Menu...";
         okInfoText.gameObject.SetActive(true);
