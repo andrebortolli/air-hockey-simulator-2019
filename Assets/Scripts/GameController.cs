@@ -42,6 +42,14 @@ public class GameController : MonoBehaviour
     private ReplayCameraController replayCameraController;
     public GameObject[] cameras;
     private bool inGame = false;
+    private bool isVSAI;
+    public bool IsVSAI
+    {
+        get
+        {
+            return isVSAI;
+        }
+    }
     public bool disablePausing = false;
 
     #region Pause
@@ -91,6 +99,7 @@ public class GameController : MonoBehaviour
                 Cursor.visible = true;
                 gameMode = "demo";
                 inGame = true;
+                isVSAI = true;
                 for (int i = 0; i < players.Count; i++)
                 {
                     players[i].aI = true;
@@ -109,6 +118,7 @@ public class GameController : MonoBehaviour
                 Cursor.visible = false;
                 gameMode = "sp";
                 inGame = true;
+                isVSAI = true;
                 players[0].aI = false;
                 players[0].UpdatePlayerType();
                 players[1].aI = true;
@@ -126,6 +136,7 @@ public class GameController : MonoBehaviour
                 Cursor.visible = false;
                 gameMode = "mp";
                 inGame = true;
+                isVSAI = false;
                 for (int i = 0; i < players.Count; i++)
                 {
                     players[i].aI = false;
@@ -143,6 +154,7 @@ public class GameController : MonoBehaviour
                 Cursor.visible = true;
                 gameMode = "menu";
                 inGame = false;
+                isVSAI = false;
                 gameTimer.ResetTimer(false, 0.0f);
                 replayController.ResetReplayState();
                 disc.GetComponent<Disc>().ResetDisc(false);

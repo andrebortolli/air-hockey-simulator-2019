@@ -9,7 +9,6 @@ public class HighscorePrompt : MonoBehaviour
 {
     public Button okButton;
     public TMP_Text okInfoText;
-    public bool isVSAI;
     public TMP_Text[] player1Name;
     public TMP_Text[] player2Name;
     public TMP_Text player1Score;
@@ -27,7 +26,7 @@ public class HighscorePrompt : MonoBehaviour
         highscoreController.DownloadedHighscoreListToString += HighscoreController_DownloadedHighscoreListToString;
         player1Score.text += gameController.players[0].GetPlayerScore();
         player2Score.text += gameController.players[1].GetPlayerScore();
-        if (isVSAI)
+        if (gameController.IsVSAI)
         {
             for (int i = 0; i < player2Name.Length; i++)
             {
@@ -39,6 +38,11 @@ public class HighscorePrompt : MonoBehaviour
         }
         else
         {
+            for (int i = 0; i < player1Name.Length; i++)
+            {
+                player1Name[i].GetComponentInParent<TMP_Dropdown>().value = 0;
+                player1Name[i].gameObject.GetComponentInParent<TMP_Dropdown>().interactable = true;
+            }
             for (int i = 0; i < player2Name.Length; i++)
             {
                 player2Name[i].GetComponentInParent<TMP_Dropdown>().value = 0;

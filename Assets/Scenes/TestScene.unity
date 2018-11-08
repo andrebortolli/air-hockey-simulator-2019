@@ -929,7 +929,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   okButton: {fileID: 1700030635}
   okInfoText: {fileID: 763833450}
-  isVSAI: 0
   player1Name:
   - {fileID: 1476526890}
   - {fileID: 1622403539}
@@ -19483,7 +19482,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b09d835efc143a244af8a316ede580b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  databaseBaseURL: localhost
+  databaseBaseURL: http://127.0.0.1
   databaseBaseURLPort: 3000
 --- !u!114 &1160822665
 MonoBehaviour:
