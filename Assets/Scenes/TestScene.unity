@@ -19442,6 +19442,7 @@ MonoBehaviour:
   - {fileID: 534669902}
   - {fileID: 1834627224}
   - {fileID: 1659825659}
+  isHighscoreEditMode: 0
   disablePausing: 0
   gameObjectsToFreezeOnPause:
   - {fileID: 587635199}
@@ -19482,8 +19483,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b09d835efc143a244af8a316ede580b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  databaseBaseURL: http://127.0.0.1
-  databaseBaseURLPort: 3000
+  databaseBaseURL: 
+  databaseBaseURLPort: 0
 --- !u!114 &1160822665
 MonoBehaviour:
   m_ObjectHideFlags: 0

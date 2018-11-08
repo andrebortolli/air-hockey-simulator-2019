@@ -5,7 +5,6 @@ using Scripts.Player; //Imports player class.
 
 public class PlayerController : MonoBehaviour
 {
-    private GameController gameController;
     private Player player; //Define the class variable.
     public GameObject goal; //Own goal.
     public GameObject opponentGoal; //Opponent Player's goal.
@@ -48,7 +47,7 @@ public class PlayerController : MonoBehaviour
     public void AddPlayerScore(int scoreToAdd)
     {
         player.Score += scoreToAdd;
-        Debug.Log(player.Score);
+        //Debug.Log(player.Score);
     }
 
     //Instantiates players.
@@ -69,14 +68,13 @@ public class PlayerController : MonoBehaviour
             type = "Player"; //Set type to Player. (Report use only).
         }
         aILast = aI; //Sets the toggle helper
-        print(string.Format("Player Type changed from to {0}, with the following axes: {1}", type, movementAxes[0] + " " + movementAxes[1]));
+        //print(string.Format("Player Type changed from to {0}, with the following axes: {1}", type, movementAxes[0] + " " + movementAxes[1]));
         return string.Format("Player Type changed from to {0}, with the following axes: {1}", type, movementAxes[0] + " " + movementAxes[1]); //Report to console.
     }
 
     private void Awake()
     {    
         rb = GetComponent<Rigidbody>(); //Get and set the GameObject's Rigidbody on Awake.
-        gameController = FindObjectOfType<GameController>();
         startPosition = transform.position;
         //UpdatePlayerType(); //Set player type on Awake.
     }
@@ -86,7 +84,8 @@ public class PlayerController : MonoBehaviour
         //Detect change in Player type. Needs to be before everything, otherwise it may desync, giving console errors.
         if (aI != aILast)
         {
-            Debug.Log(UpdatePlayerType()); //Update player type and print the method's return on the console.
+            UpdatePlayerType();
+            //Debug.Log(UpdatePlayerType()); //Update player type and print the method's return on the console.
         }
         //If the player type is AI, use AI movement code.
         if (aI)

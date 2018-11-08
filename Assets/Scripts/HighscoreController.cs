@@ -5,20 +5,47 @@ using UnityEngine;
 
 public class HighscoreController : MonoBehaviour
 {
-    public string databaseBaseURL = "localhost";
-    public int databaseBaseURLPort = 3000;
+    private string databaseBaseURL = "";
+    private int databaseBaseURLPort = 0;
     private string databaseURL;
+    private bool isGetDatabaseConnectionInfoRunning;
+
 
     public event Action<HighscoreList> DownloadedHighscoreList;
     public event Action<string> DownloadedHighscoreListToString;
 
     public void Awake()
     {
+        StartCoroutine(GetDatabaseConnectionInfo());
+    }
+
+    IEnumerator GetDatabaseConnectionInfo()
+    {
+        isGetDatabaseConnectionInfoRunning = true;
+        databaseBaseURL = "http://127.0.0.1";
+        databaseBaseURLPort = 3000;
+        WWW connection = new WWW(Application.absoluteURL + "/database/getConnectionInfo");
+        yield return connection;
+        if (connection.error == null)
+        {
+            DatabaseConnectionInfo dbConnectionInfo = DatabaseConnectionInfo.CreateFromJSON(connection.text);
+            Debug.Log(string.Format("DB Connection Info: {0}:{1}", dbConnectionInfo.connectionURL, dbConnectionInfo.connectionPort));
+            databaseBaseURL = dbConnectionInfo.connectionURL;
+            databaseBaseURLPort = dbConnectionInfo.connectionPort;
+        }
+        else
+        {
+            Debug.LogError("Error: " + connection.error + "\n Could not get Database Connection Information. Using localhost:3000.");
+        }
         databaseURL = string.Format("{0}:{1}", databaseBaseURL, databaseBaseURLPort);
+        isGetDatabaseConnectionInfoRunning = false;
+        Debug.LogWarning("Using the following Database Address: " + databaseURL);
+        yield return null;
     }
 
     public IEnumerator StartHighscoreDownload(bool limit, int limitSize = 100, bool ToString = true)
     {
+        yield return isGetDatabaseConnectionInfoRunning;
         WWW connection;
         if (limit)
         {
@@ -47,7 +74,7 @@ public class HighscoreController : MonoBehaviour
         }
         else
         {
-            Debug.Log("Error: " + connection.error);
+            Debug.LogError("Error: " + connection.error);
         }  
         yield return null;
     }
@@ -70,7 +97,7 @@ public class HighscoreController : MonoBehaviour
 
     public IEnumerator SaveHighscoreInDatabase(Highscore input)
     {
-
+        yield return isGetDatabaseConnectionInfoRunning;
         WWWForm form = new WWWForm();
         form.AddField("player1Name", input.player1Name);
         form.AddField("player2Name", input.player2Name);
@@ -84,7 +111,7 @@ public class HighscoreController : MonoBehaviour
         }
         else
         {
-            Debug.Log("Error: " + connection.error);
+            Debug.LogError("Error: " + connection.error);
         }
     }
 }
