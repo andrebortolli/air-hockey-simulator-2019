@@ -39,6 +39,7 @@ public class HighscorePrompt : MonoBehaviour
                 }
                 for (int i = 0; i < player2Name.Length; i++)
                 {
+                    player1Name[i].gameObject.transform.parent.gameObject.SetActive(true);
                     player2Name[i].gameObject.GetComponentInParent<TMP_Dropdown>().interactable = false;
                 }
                 player2Name[0].GetComponentInParent<TMP_Dropdown>().value = 12;
