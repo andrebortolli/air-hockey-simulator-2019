@@ -15,6 +15,7 @@ public class ReplayController : MonoBehaviour
     List<Vector3>[] gameObjectsPositionXZAndRotation;
     public TMP_Text[] textToRecord;
     List<string>[] textToRecordTexts;
+    public GameObject replayText;
 
     // Use this for initialization
     void Awake()
@@ -76,6 +77,7 @@ public class ReplayController : MonoBehaviour
         record = false;
         replayFrame = 0;
         gameController.disablePausing = false;
+        replayText.SetActive(false);
         gameController.PauseGame(false, false, false);  
         gameController.ToggleCurrentGameModeCamera();
         replayCameraToggled = false;
@@ -117,6 +119,7 @@ public class ReplayController : MonoBehaviour
             gameController.SetReplayCamera();
             gameController.PauseGame(true, false, false);
             gameController.disablePausing = true;
+            replayText.SetActive(true);
             replayFrame = gameObjectsPositionXZAndRotation[0].Count - frames;
             replayFrame = Mathf.Clamp(replayFrame, 0, gameObjectsPositionXZAndRotation[0].Count - 1);
         }
