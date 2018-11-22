@@ -549,25 +549,25 @@ public class GameController : MonoBehaviour
             player2ScoreUI.text = string.Format("{0}", players[1].GetPlayerScore());
             timerUI.text = gameTimer.GetGameClockToString();
         }
-        if (Input.GetKeyDown(KeyCode.P))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             PauseGame(!IsPaused);
         }
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            SetGameState("demo");
-        }
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            SetGameState("sp");
-        }
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            SetGameState("mp");
-        }
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            SetGameState("menu");
-        }
+        //if (Input.GetKeyDown(KeyCode.D))
+        //{
+        //    SetGameState("demo");
+        //}
+        //if (Input.GetKeyDown(KeyCode.S))
+        //{
+        //    SetGameState("sp");
+        //}
+        //if (Input.GetKeyDown(KeyCode.M))
+        //{
+        //    SetGameState("mp");
+        //}
+        //if (Input.GetKeyDown(KeyCode.R))
+        //{
+        //    SetGameState("menu");
+        //}
     }
 }

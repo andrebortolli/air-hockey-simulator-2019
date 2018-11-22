@@ -37,6 +37,7 @@ public class Disc : MonoBehaviour
 
     IEnumerator StartDisc(bool record = false)
     {
+        gameController.disablePausing = true;
         while (replayController.IsReplaying() == true)
         {
             yield return new WaitForSeconds(.5f);
@@ -58,6 +59,7 @@ public class Disc : MonoBehaviour
             replayController.SetRecordState(record);
             Throw(throwSpeed);
         }
+        gameController.disablePausing = false;
         yield return null;
     }
 

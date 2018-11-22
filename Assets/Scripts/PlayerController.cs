@@ -50,6 +50,21 @@ public class PlayerController : MonoBehaviour
         //Debug.Log(player.Score);
     }
 
+    public void ChangePlayerMovementAxes(string x, string y, string trigger, bool invert = false)
+    {
+        if (invert)
+        {
+            inverseControls = true;
+        }
+        else
+        {
+            inverseControls = false;
+        }
+        player.MovementAxisNameX = movementAxes[0] = x;
+        player.MovementAxisNameY = movementAxes[1] = y;
+        triggerAxis = trigger;
+    }
+
     //Instantiates players.
     public string UpdatePlayerType()
     {
