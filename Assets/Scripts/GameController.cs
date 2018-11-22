@@ -98,6 +98,7 @@ public class GameController : MonoBehaviour
         {
             case "demo": //Demo Code
                 Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.Confined;
                 gameMode = "demo";
                 inGame = true;
                 isVSAI = true;
@@ -118,6 +119,7 @@ public class GameController : MonoBehaviour
 
             case "sp": //Single Player Code
                 Cursor.visible = false;
+                Cursor.lockState = CursorLockMode.Locked;
                 gameMode = "sp";
                 inGame = true;
                 isVSAI = true;
@@ -137,6 +139,7 @@ public class GameController : MonoBehaviour
 
             case "mp": //Multiplayer Code
                 Cursor.visible = false;
+                Cursor.lockState = CursorLockMode.Locked;
                 gameMode = "mp";
                 inGame = true;
                 isVSAI = false;
@@ -156,6 +159,7 @@ public class GameController : MonoBehaviour
                 break;
             case "menu":
                 Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.Confined;
                 gameMode = "menu";
                 inGame = false;
                 isVSAI = false;
@@ -180,6 +184,7 @@ public class GameController : MonoBehaviour
                 if (gameMode != "demo")
                 {
                     Cursor.visible = true;
+                    Cursor.lockState = CursorLockMode.Confined;
                     gameMode = "menu";
                     inGame = false;
                     replayController.ResetReplayState();
@@ -430,6 +435,7 @@ public class GameController : MonoBehaviour
                 if (showCanvas)
                 {
                     Cursor.visible = false;
+                    Cursor.lockState = CursorLockMode.Locked;
                     ToggleCurrentGameModeCamera();
                     if (gameObjectsToEnableOnPause != null)
                     {
@@ -460,6 +466,7 @@ public class GameController : MonoBehaviour
                 if (showCanvas)
                 {
                     Cursor.visible = true;
+                    Cursor.lockState = CursorLockMode.Confined;
                     ToggleCamera("Demo Camera");
                     if (gameObjectsToEnableOnPause != null)
                     {
