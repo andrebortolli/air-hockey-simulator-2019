@@ -19,6 +19,8 @@ TagManager:
   - SP Camera
   - MP Camera
   - BGM Controller
+  - Apply Force Area Player 1
+  - Apply Force Area Player 2
   layers:
   - Default
   - TransparentFX

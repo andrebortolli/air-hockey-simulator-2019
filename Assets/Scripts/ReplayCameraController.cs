@@ -17,7 +17,7 @@ public class ReplayCameraController : MonoBehaviour {
                     return null;
                 }
             }
-            Debug.Log(replayCameras.Length);
+            //Debug.Log(replayCameras.Length);
             return replayCameras[Random.Range(0, replayCameras.Length)];
         }
         else

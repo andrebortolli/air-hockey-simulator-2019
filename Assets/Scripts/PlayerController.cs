@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 startPosition; //Player start position. Used in the return to function in AI movement code.
     public bool aI; //Toggle switch between AI and Player.
     private bool aILast; //Toggle switch helper.
+    public bool aICanAddForce = false;
     [Range(0.0f, 1.0f)] //AI response range.
     public float aiResponse; //AI response slider.
     public Transform target; //AI target to follow.
@@ -136,7 +137,7 @@ public class PlayerController : MonoBehaviour
 	}
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Disc" && aI)
+        if (collision.gameObject.tag == "Disc" && aI && aICanAddForce)
         {
             triggerAxisMultiplier = 1.0f;
             target.parent.parent.GetComponent<Rigidbody>().AddForce((opponentGoal.transform.position - target.transform.position) * Random.Range(25.0f, 75.0f) * aiResponse, ForceMode.Acceleration); //Shoot to goal.
@@ -147,6 +148,17 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.tag == "Disc" && aI)
         {
             triggerAxisMultiplier = 0.2f;
+        }
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.tag == "Apply Force Area Player 1" || other.gameObject.tag == "Apply Force Area Player 2")
+        {
+            aICanAddForce = true;
+        }
+        else
+        {
+            aICanAddForce = false;
         }
     }
 }

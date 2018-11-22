@@ -41,12 +41,12 @@ public class Disc : MonoBehaviour
         while (replayController.IsReplaying() == true)
         {
             yield return new WaitForSeconds(.5f);
-            Debug.Log("Waiting for IsReplaying to become false.");
+            //Debug.Log("Waiting for IsReplaying to become false.");
         }
         while (gameController.IsPaused == true)
         {
             yield return new WaitForSeconds(.5f);
-            Debug.Log("Waiting for IsPaused to become false.");
+            //Debug.Log("Waiting for IsPaused to become false.");
         }
         isGoal = false;
         rb.isKinematic = true;
@@ -85,6 +85,36 @@ public class Disc : MonoBehaviour
         else
         {
             Debug.LogError("No SFX. Cannot Play.");
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.tag == "Apply Force Area Player 1")
+        {
+            gameController.players[0].aICanAddForce = true;
+            Debug.Log("player1-true");
+        }
+        else
+        {
+            if (other.gameObject.tag != "Apply Force Area Player 2" && other.gameObject.tag != "Front Goal" && other.gameObject.tag != "Back Goal")
+            {
+                gameController.players[0].aICanAddForce = false;
+                Debug.Log("player1-false");
+            }
+        }
+        if (other.gameObject.tag == "Apply Force Area Player 2")
+        {
+            gameController.players[1].aICanAddForce = true;
+            Debug.Log("player2-true");
+        }
+        else
+        {
+            if (other.gameObject.tag != "Apply Force Area Player 1" && other.gameObject.tag != "Front Goal" && other.gameObject.tag != "Back Goal")
+            {
+                gameController.players[1].aICanAddForce = false;
+                Debug.Log("player2-false");
+            }
         }
     }
 

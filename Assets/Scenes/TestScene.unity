@@ -13327,6 +13327,7 @@ MonoBehaviour:
   goal: {fileID: 65923820}
   opponentGoal: {fileID: 1146460228}
   aI: 1
+  aICanAddForce: 0
   aiResponse: 1
   target: {fileID: 509077858}
   inverseControls: 0
@@ -41042,6 +41043,7 @@ MonoBehaviour:
   goal: {fileID: 1146460228}
   opponentGoal: {fileID: 65923820}
   aI: 1
+  aICanAddForce: 0
   aiResponse: 1
   target: {fileID: 509077858}
   inverseControls: 0
@@ -43623,6 +43625,19 @@ Prefab:
       propertyPath: replayCameras.Array.data[5]
       value: 
       objectReference: {fileID: 1659825659}
+    - target: {fileID: 1032607809753606, guid: d92b33f7966f381438e09cf2503a03b4, type: 2}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 1434147975375626, guid: d92b33f7966f381438e09cf2503a03b4, type: 2}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 23408134379617314, guid: d92b33f7966f381438e09cf2503a03b4,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d92b33f7966f381438e09cf2503a03b4, type: 2}
   m_IsPrefabAsset: 0
