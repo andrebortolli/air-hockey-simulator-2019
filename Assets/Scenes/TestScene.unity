@@ -33917,6 +33917,7 @@ GameObject:
   - component: {fileID: 1160822662}
   - component: {fileID: 1160822663}
   - component: {fileID: 1160822664}
+  - component: {fileID: 1160822666}
   - component: {fileID: 1160822665}
   m_Layer: 0
   m_Name: Game Controller
@@ -33950,6 +33951,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainMenu: {fileID: 258858489}
+  settingsMenu: {fileID: 1355442415}
   matchTime: 5
   cameras:
   - {fileID: 259280791}
@@ -34009,6 +34011,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   decrement: 0
+--- !u!114 &1160822666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1160822661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d413af406c0ba5418e495b075b41625, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainMixer: {fileID: 24100000, guid: 1d65828c0ab90c34592d7bb7bfd13d3e, type: 2}
+  settingsMenu: {fileID: 1355442417}
 --- !u!1 &1188259377
 GameObject:
   m_ObjectHideFlags: 0
@@ -36102,12 +36117,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dcf4995d8e095245a8e4aa397b1eb8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainMixer: {fileID: 24100000, guid: 1d65828c0ab90c34592d7bb7bfd13d3e, type: 2}
+  gameController: {fileID: 0}
+  audioMixerController: {fileID: 1160822666}
   mainMenu: {fileID: 258858489}
   pauseMenu: {fileID: 1615695322}
   confirmationPrompt: {fileID: 328223529}
   errorPrompt: {fileID: 1143723389}
-  gameController: {fileID: 0}
   player1Controls: {fileID: 529364486}
   player2Controls: {fileID: 1564189703}
   player1Inverse: {fileID: 1972239280}

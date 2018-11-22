@@ -25,8 +25,8 @@ public class HighscorePrompt : MonoBehaviour
         highscoreController = FindObjectOfType<HighscoreController>();
         highscoreController.DownloadedHighscoreListToString += HighscoreController_DownloadedHighscoreListToString;
         StartCoroutine(highscoreController.StartHighscoreDownload(true, numberOfHighscoresToDisplay));
-        player1Score.text += gameController.players[0].GetPlayerScore();
-        player2Score.text += gameController.players[1].GetPlayerScore();
+        player1Score.text = string.Format("{0:D2}", gameController.players[0].GetPlayerScore());
+        player2Score.text = string.Format("{0:D2}",gameController.players[1].GetPlayerScore());
         if (gameController.isHighscoreEditMode)
         {
             if (gameController.IsVSAI)

@@ -93,27 +93,27 @@ public class Disc : MonoBehaviour
         if (other.gameObject.tag == "Apply Force Area Player 1")
         {
             gameController.players[0].aICanAddForce = true;
-            Debug.Log("player1-true");
+           // Debug.Log("player1-true");
         }
         else
         {
             if (other.gameObject.tag != "Apply Force Area Player 2" && other.gameObject.tag != "Front Goal" && other.gameObject.tag != "Back Goal")
             {
                 gameController.players[0].aICanAddForce = false;
-                Debug.Log("player1-false");
+                //Debug.Log("player1-false");
             }
         }
         if (other.gameObject.tag == "Apply Force Area Player 2")
         {
             gameController.players[1].aICanAddForce = true;
-            Debug.Log("player2-true");
+            //Debug.Log("player2-true");
         }
         else
         {
             if (other.gameObject.tag != "Apply Force Area Player 1" && other.gameObject.tag != "Front Goal" && other.gameObject.tag != "Back Goal")
             {
                 gameController.players[1].aICanAddForce = false;
-                Debug.Log("player2-false");
+                //Debug.Log("player2-false");
             }
         }
     }

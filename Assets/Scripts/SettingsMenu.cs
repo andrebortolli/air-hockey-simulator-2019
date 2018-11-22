@@ -2,75 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Audio;
 using TMPro;
 
 public class SettingsMenu : MonoBehaviour
 {
-    public AudioMixer mainMixer;
+    public GameController gameController;
+    public AudioMixerController audioMixerController;
     public GameObject mainMenu;
     public GameObject pauseMenu;
     public GameObject confirmationPrompt;
     public GameObject errorPrompt;
-    public GameController gameController;
     public TMP_Dropdown player1Controls, player2Controls;
     public Toggle player1Inverse, player2Inverse;
     public Slider masterSlider, musicSlider, sfxSlider;
 
-    public void ReadPlayerPrefs()
-    {
-        if (PlayerPrefs.GetInt("settings_audio") == 0)
-        {
-            SavePlayerPrefs();
-        }
-        else
-        {
-            float playerPrefsMasterVolume = PlayerPrefs.GetFloat("settings_masterVolume");
-            SetVolumeMaster(playerPrefsMasterVolume);
-            masterSlider.value = playerPrefsMasterVolume;
-            float playerPrefsMusicVolume = PlayerPrefs.GetFloat("settings_musicVolume");
-            SetVolumeMusic(playerPrefsMusicVolume);
-            musicSlider.value = playerPrefsMusicVolume;
-            float playerPrefsSFXVolume = PlayerPrefs.GetFloat("settings_sfxVolume");
-            SetVolumeSfx(playerPrefsSFXVolume);
-            sfxSlider.value = playerPrefsSFXVolume;
-        }
-    }
-
-    public void SavePlayerPrefs()
-    {
-        float gameDefaultMasterVolume;
-        mainMixer.GetFloat("masterVolume", out gameDefaultMasterVolume);
-        PlayerPrefs.SetFloat("settings_masterVolume", gameDefaultMasterVolume);
-
-        float gameDefaultMusicVolume;
-        mainMixer.GetFloat("musicVolume", out gameDefaultMusicVolume);
-        PlayerPrefs.SetFloat("settings_musicVolume", gameDefaultMusicVolume);
-
-        float gameDefaultSFXVolume;
-        mainMixer.GetFloat("sfxVolume", out gameDefaultSFXVolume);
-        PlayerPrefs.SetFloat("settings_sfxVolume", gameDefaultSFXVolume);
-
-        PlayerPrefs.SetInt("settings_audio", 1);
-        ReadPlayerPrefs();
-    }
-
     private void Awake()
     {
         gameController = FindObjectOfType<GameController>();
-
-    }
-
-    private void Start()
-    {
-        if (mainMixer)
-        {
-            ReadPlayerPrefs();
-        }
-        else
-        {
-            Debug.LogError("No mainMixer!");
-        }
     }
 
     public bool ChangePlayerInput()
@@ -113,24 +61,24 @@ public class SettingsMenu : MonoBehaviour
 
     public void SetVolumeMaster(float volume)
     {
-        mainMixer.SetFloat("masterVolume", volume);
+        audioMixerController.SetVolumeMaster(volume);
     }
 
     public void SetVolumeMusic(float volume)
     {
-        mainMixer.SetFloat("musicVolume", volume);
+        audioMixerController.SetVolumeMusic(volume);
     }
 
     public void SetVolumeSfx(float volume)
     {
-        mainMixer.SetFloat("sfxVolume", volume);
+        audioMixerController.SetVolumeSfx(volume);
     }
 
     public void Ok()
     {
         if (ChangePlayerInput())
         {
-            SavePlayerPrefs();
+            audioMixerController.SavePlayerPrefs();
             if (gameController.GameMode != "menu")
             {
                 gameController.EnableMenu(pauseMenu);
@@ -159,5 +107,6 @@ public class SettingsMenu : MonoBehaviour
             gameController.EnableMenu(mainMenu);
             gameController.DisableMenu(this.gameObject);
         }
+        audioMixerController.ReadPlayerPrefs();
     }
 }

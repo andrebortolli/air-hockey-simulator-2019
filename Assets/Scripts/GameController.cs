@@ -36,6 +36,7 @@ public class GameController : MonoBehaviour
         }
     }
     public GameObject mainMenu;
+    public GameObject settingsMenu;
     private ReplayController replayController;
     private Timer gameTimer;
     public float matchTime = 3600f;
@@ -525,6 +526,7 @@ public class GameController : MonoBehaviour
     {
         PauseGame(pause);
     }
+
     private void Awake()
     {
         gameTimer = FindObjectOfType<Timer>();
@@ -558,23 +560,26 @@ public class GameController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            PauseGame(!IsPaused);
+            if (!settingsMenu.activeSelf)
+            {
+                PauseGame(!IsPaused);
+            }
         }
-        //if (Input.GetKeyDown(KeyCode.D))
-        //{
-        //    SetGameState("demo");
-        //}
-        //if (Input.GetKeyDown(KeyCode.S))
-        //{
-        //    SetGameState("sp");
-        //}
-        //if (Input.GetKeyDown(KeyCode.M))
-        //{
-        //    SetGameState("mp");
-        //}
-        //if (Input.GetKeyDown(KeyCode.R))
-        //{
-        //    SetGameState("menu");
-        //}
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            SetGameState("demo");
+        }
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            SetGameState("sp");
+        }
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            SetGameState("mp");
+        }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            SetGameState("menu");
+        }
     }
 }
