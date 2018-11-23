@@ -37,7 +37,6 @@ public class Disc : MonoBehaviour
 
     IEnumerator StartDisc(bool record = false)
     {
-        gameController.disablePausing = true;
         while (replayController.IsReplaying() == true)
         {
             yield return new WaitForSeconds(.5f);
@@ -53,13 +52,20 @@ public class Disc : MonoBehaviour
         transform.position = startingPosition;
         yield return new WaitForSeconds(1.0f);
         rb.isKinematic = false;
+        while (gameController.IsPaused == true)
+        {
+            yield return new WaitForSeconds(.5f);
+            //Debug.Log("Waiting for IsPaused to become false.");
+        }
         if (rb != null)
         {
             rb.detectCollisions = true;
-            replayController.SetRecordState(record);
+            if (gameController.GameMode != "menu")
+            {
+                replayController.SetRecordState(record);
+            }
             Throw(throwSpeed);
         }
-        gameController.disablePausing = false;
         yield return null;
     }
 
@@ -134,7 +140,10 @@ public class Disc : MonoBehaviour
                 {
                     PlaySFX(sfx[3]);
                 }
-                replayController.PlayReplay(240);
+                if (gameController.GameMode != "menu")
+                {
+                    replayController.PlayReplay(240);
+                }
                 StopCoroutine(StartDisc());
                 if (gameController.GameMode != "demo")
                 {
@@ -157,7 +166,10 @@ public class Disc : MonoBehaviour
                 {
                     PlaySFX(sfx[3]);
                 }
-                replayController.PlayReplay(240);
+                if (gameController.GameMode != "menu")
+                {
+                    replayController.PlayReplay(240);
+                }
                 StopCoroutine(StartDisc());
                 if (gameController.GameMode != "demo")
                 {

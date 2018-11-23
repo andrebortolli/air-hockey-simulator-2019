@@ -113,6 +113,7 @@ public class GameController : MonoBehaviour
                 player1ScoreUI.gameObject.SetActive(true);
                 player2ScoreUI.gameObject.SetActive(true);
                 timerUI.gameObject.SetActive(true);
+                disablePausing = false;
                 ToggleCamera("Demo Camera");
                 gameTimer.ResetTimer(true, matchTime);
                 gameTimer.SetClockState(true);
@@ -133,6 +134,7 @@ public class GameController : MonoBehaviour
                 player1ScoreUI.gameObject.SetActive(true);
                 player2ScoreUI.gameObject.SetActive(true);
                 timerUI.gameObject.SetActive(true);
+                disablePausing = false;
                 ToggleCamera("SP Camera");
                 gameTimer.ResetTimer(true, matchTime);
                 gameTimer.SetClockState(true);
@@ -154,6 +156,7 @@ public class GameController : MonoBehaviour
                 player1ScoreUI.gameObject.SetActive(true);
                 player2ScoreUI.gameObject.SetActive(true);
                 timerUI.gameObject.SetActive(true);
+                disablePausing = false;
                 ToggleCamera("MP Camera");
                 gameTimer.ResetTimer(true, matchTime);
                 gameTimer.SetClockState(true);
@@ -177,9 +180,11 @@ public class GameController : MonoBehaviour
                     players[i].aiResponse = Random.Range(0.50f, 0.85f);
                     players[i].UpdatePlayerType();
                 }
+                disablePausing = true;
                 ToggleCamera("Demo Camera");
                 gameTimer.SetClockState(true);
                 mainMenu.SetActive(true);
+
                 break;
             case "highscorePrompt":
                 if (gameMode != "demo")
@@ -193,6 +198,7 @@ public class GameController : MonoBehaviour
                     player2ScoreUI.gameObject.SetActive(false);
                     timerUI.gameObject.SetActive(false);
                     PauseGame(true, false, false);
+                    disablePausing = true;
                     EnableMenu(highscorePrompt.gameObject);
                 }
                 else
@@ -433,6 +439,10 @@ public class GameController : MonoBehaviour
             if (!isPaused) //Unpause
             {
                 ToggleFreezeGameObjects(false, pauseAudio);
+                if (gameMode != "menu")
+                {
+                    replayController.SetRecordState(true);
+                }
                 if (showCanvas)
                 {
                     Cursor.visible = false;
@@ -464,6 +474,7 @@ public class GameController : MonoBehaviour
             else //Pause
             {
                 ToggleFreezeGameObjects(true, pauseAudio);
+                replayController.SetRecordState(false);
                 if (showCanvas)
                 {
                     Cursor.visible = true;
@@ -544,6 +555,7 @@ public class GameController : MonoBehaviour
         FindPlayers();
         MainMenu();
     }
+
     // Update is called once per frame
     void Update()
     {
@@ -558,9 +570,10 @@ public class GameController : MonoBehaviour
             player2ScoreUI.text = string.Format("{0}", players[1].GetPlayerScore());
             timerUI.text = gameTimer.GetGameClockToString();
         }
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (!settingsMenu.activeSelf)
+            if (!disablePausing)
             {
                 PauseGame(!IsPaused);
             }

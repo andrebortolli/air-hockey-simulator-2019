@@ -21,6 +21,18 @@ public class SettingsMenu : MonoBehaviour
         gameController = FindObjectOfType<GameController>();
     }
 
+    private void OnEnable()
+    {
+        gameController.disablePausing = true;
+    }
+    private void OnDisable()
+    {
+        if (gameController.GameMode != "menu")
+        {
+            gameController.disablePausing = false;
+        }
+    }
+
     public bool ChangePlayerInput()
     {
         if (player1Controls && player2Controls && player1Controls.value != player2Controls.value)

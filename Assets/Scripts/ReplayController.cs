@@ -6,6 +6,8 @@ using TMPro;
 public class ReplayController : MonoBehaviour
 {
     private GameController gameController;
+    public bool cleanRecording = true;
+    public int framesToStore = 1000;
     private bool isReplaying = false;
     private bool record = false;
     private int replayFrame = 0;
@@ -135,6 +137,18 @@ public class ReplayController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        int frames = gameObjectsPositionXZAndRotation[0].Count;
+        if (frames > framesToStore - 1 && cleanRecording)
+        {
+            for (int i = 0; i < gameObjectsToRecord.Length; i++)
+            {
+                gameObjectsPositionXZAndRotation[i].RemoveAt(0);
+            }
+            for (int i = 0; i < textToRecord.Length; i++)
+            {
+                textToRecordTexts[i].RemoveAt(0);
+            }
+        }
         if (isReplaying)
         {
             if(replayCameraToggled == false)
