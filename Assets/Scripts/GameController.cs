@@ -35,8 +35,7 @@ public class GameController : MonoBehaviour
             return isPaused;
         }
     }
-    public GameObject mainMenu;
-    public GameObject settingsMenu;
+
     private ReplayController replayController;
     private Timer gameTimer;
     public float matchTime = 3600f;
@@ -72,12 +71,17 @@ public class GameController : MonoBehaviour
     #endregion
 
     #region UI
+    public GameObject noticeMenu;
+    private bool noticeShown = false;
+    public GameObject mainMenu;
+    public GameObject settingsMenu;
     public TMP_Text player1ScoreUI;
     public TMP_Text player2ScoreUI;
     public TMP_Text timerUI;
     public TMP_Dropdown gameTypeDropdown;
     public TMP_Dropdown matchTimeDropdown;
     public HighscorePrompt highscorePrompt;
+    public GameObject resultsScreen;
     #endregion
 
     public List<PlayerController> players;
@@ -183,8 +187,15 @@ public class GameController : MonoBehaviour
                 disablePausing = true;
                 ToggleCamera("Demo Camera");
                 gameTimer.SetClockState(true);
-                mainMenu.SetActive(true);
-
+                if (noticeShown)
+                {
+                    mainMenu.SetActive(true);
+                }
+                else
+                {
+                    EnableMenu(noticeMenu);
+                    noticeShown = true;
+                }
                 break;
             case "highscorePrompt":
                 if (gameMode != "demo")
@@ -205,6 +216,19 @@ public class GameController : MonoBehaviour
                 {
                     SetGameState("menu");
                 }
+                break;
+            case "results":
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.Confined;
+                gameMode = "menu";
+                inGame = false;
+                replayController.ResetReplayState();
+                player1ScoreUI.gameObject.SetActive(false);
+                player2ScoreUI.gameObject.SetActive(false);
+                timerUI.gameObject.SetActive(false);
+                PauseGame(true, false, false);
+                disablePausing = true;
+                EnableMenu(resultsScreen);
                 break;
             default:
                 Debug.LogError("Incorrect usage! Use \"demo\" for demo mode; \"sp\" for single player mode;  \"mp\" for multiplayer mode; and \"menu\" for Menu Mode.");
@@ -368,7 +392,7 @@ public class GameController : MonoBehaviour
         return activeCamera;
     }
 
-    private void MainMenu()
+    public void MainMenu()
     {
         SetGameState("menu");
     }
@@ -433,7 +457,7 @@ public class GameController : MonoBehaviour
 
     public void PauseGame(bool pause, bool showCanvas = true, bool pauseAudio = true)
     {
-        if (mainMenu.activeSelf == false && disablePausing == false)
+        if (disablePausing == false)
         {
             isPaused = pause;
             if (!isPaused) //Unpause
@@ -530,7 +554,8 @@ public class GameController : MonoBehaviour
 
     void GameOver()
     {
-        SetGameState("highscorePrompt");
+        //SetGameState("highscorePrompt");
+        SetGameState("results");
     }
 
     public void SetPause(bool pause)
@@ -571,28 +596,31 @@ public class GameController : MonoBehaviour
             timerUI.text = gameTimer.GetGameClockToString();
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.P))
         {
             if (!disablePausing)
             {
                 PauseGame(!IsPaused);
             }
         }
-        if (Input.GetKeyDown(KeyCode.D))
+        if (enableDebug)
         {
-            SetGameState("demo");
-        }
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            SetGameState("sp");
-        }
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            SetGameState("mp");
-        }
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            SetGameState("menu");
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                SetGameState("demo");
+            }
+            if (Input.GetKeyDown(KeyCode.S))
+            {
+                SetGameState("sp");
+            }
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                SetGameState("mp");
+            }
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                SetGameState("menu");
+            }
         }
     }
 }

@@ -10,7 +10,6 @@ public class HighscoreController : MonoBehaviour
     private string databaseURL;
     private bool isGetDatabaseConnectionInfoRunning;
 
-
     public event Action<HighscoreList> DownloadedHighscoreList;
     public event Action<string> DownloadedHighscoreListToString;
 
