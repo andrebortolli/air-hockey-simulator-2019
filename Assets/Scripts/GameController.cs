@@ -97,6 +97,16 @@ public class GameController : MonoBehaviour
         menu.SetActive(false);
     }
 
+    public void SetMouseSensibilityP1(float speed)
+    {
+        players[0].movementAxesMultiplier = speed;
+    }
+
+    public void SetMouseSensibilityP2(float speed)
+    {
+        players[1].movementAxesMultiplier = speed;
+    }
+
     public void SetGameState(string state)
     {
         switch (state)

@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb; //Player Rigidbody component.
     public bool inverseControls; //Toggle player inverse movement.
     public string[] movementAxes = new string[2]; //Player movement axes names.
+    public float movementAxesMultiplier = 1.0f;
     public string triggerAxis; //Player trigger axis name.
     private Vector2 movementAxesValues; //Player movement axes values.
     public float triggerAxisMultiplier; //Player trigger axis multiplier.
@@ -126,12 +127,12 @@ public class PlayerController : MonoBehaviour
             if (inverseControls)
             {
                 movementAxesValues = new Vector2(Input.GetAxis(player.MovementAxisNameX), Input.GetAxis(player.MovementAxisNameY));
-                rb.velocity = new Vector3(movementAxesValues.x * -speed * triggerAxisMultiplier, 0.0f, movementAxesValues.y * -speed * triggerAxisMultiplier) * Time.fixedDeltaTime;
+                rb.velocity = new Vector3(movementAxesValues.x * -speed * triggerAxisMultiplier * movementAxesMultiplier, 0.0f, movementAxesValues.y * -speed * triggerAxisMultiplier * movementAxesMultiplier) * Time.fixedDeltaTime;
             }
             else
             {
                 movementAxesValues = new Vector2(Input.GetAxis(player.MovementAxisNameX), Input.GetAxis(player.MovementAxisNameY));
-                rb.velocity = new Vector3(movementAxesValues.x * speed * triggerAxisMultiplier, 0.0f, movementAxesValues.y * speed * triggerAxisMultiplier) * Time.fixedDeltaTime;
+                rb.velocity = new Vector3(movementAxesValues.x * speed * triggerAxisMultiplier * movementAxesMultiplier, 0.0f, movementAxesValues.y * speed * triggerAxisMultiplier * movementAxesMultiplier) * Time.fixedDeltaTime;
             }
         }
 	}
